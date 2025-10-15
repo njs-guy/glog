@@ -14,3 +14,11 @@ config/name="glog"
 run/main_scene="uid://6s3fq866c1aa"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Glog="*res://addons/glog/src/glog.tscn"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/glog/plugin.cfg")
