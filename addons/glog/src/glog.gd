@@ -13,8 +13,8 @@ enum LogLevel {
 }
 
 @export var log_level := LogLevel.INFO
+@export var include_timestamp := true
 # @export var output_to_file := false
-# @export var include_timestamp := false
 
 
 ## Returns [code]true[/code] if the log_level is enabled.
@@ -28,13 +28,43 @@ func _check_log_level(level_to_check: LogLevel) -> bool:
 	return true
 
 
-func log_message(
+func _get_timestamp() -> String:
+	if !include_timestamp:
+		return ""
+
+	var datetime_dict := Time.get_datetime_dict_from_system()
+	var output = (
+		"%s/%s/%s %s:%s:%s"
+		% [
+			datetime_dict.year,
+			datetime_dict.month,
+			datetime_dict.day,
+			datetime_dict.hour,
+			datetime_dict.minute,
+			datetime_dict.second,
+		]
+	)
+	return output
+
+
+func _log_message(
 	category: String,
 	message: String,
 	level := LogLevel.INFO,
-	separator := " ",
 ) -> void:
-	var output := "%s%s%s" % [category, separator, message]
+	var timestamp = ""
+
+	if include_timestamp:
+		timestamp = "[%s]" % _get_timestamp()
+
+	var output := (
+		"%s[%s] %s"
+		% [
+			timestamp,
+			category,
+			message,
+		]
+	)
 
 	match level:
 		LogLevel.DEBUG:
@@ -55,21 +85,21 @@ func log_message(
 			pass
 
 
-func debug(category: String, message: String, separator := " ") -> void:
+func debug(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.DEBUG):
-		log_message(category, message, LogLevel.DEBUG, separator)
+		_log_message(category, message, LogLevel.DEBUG)
 
 
-func info(category: String, message: String, separator := " ") -> void:
+func info(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.INFO):
-		log_message(category, message, LogLevel.INFO, separator)
+		_log_message(category, message, LogLevel.INFO)
 
 
-func warn(category: String, message: String, separator := " ") -> void:
+func warn(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.WARN):
-		log_message(category, message, LogLevel.WARN, separator)
+		_log_message(category, message, LogLevel.WARN)
 
 
-func error(category: String, message: String, separator := " ") -> void:
+func error(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.ERROR):
-		log_message(category, message, LogLevel.ERROR, separator)
+		_log_message(category, message, LogLevel.ERROR)
