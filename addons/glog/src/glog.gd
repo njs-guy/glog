@@ -1,7 +1,6 @@
 extends Node
 
 # TODO: output to file
-# TODO: timestamp
 # TODO: config file
 
 enum LogLevel {
@@ -28,20 +27,24 @@ func _check_log_level(level_to_check: LogLevel) -> bool:
 	return true
 
 
+func _get_log_level_key(level: LogLevel) -> String:
+	return LogLevel.keys()[level]
+
+
 func _get_timestamp() -> String:
 	if !include_timestamp:
 		return ""
 
 	var datetime_dict := Time.get_datetime_dict_from_system()
 	var output = (
-		"%s/%s/%s %s:%s:%s"
+		"%s.%s.%s %s:%s:%s"
 		% [
 			datetime_dict.year,
-			datetime_dict.month,
-			datetime_dict.day,
-			datetime_dict.hour,
-			datetime_dict.minute,
-			datetime_dict.second,
+			"%02d" % datetime_dict.month,
+			"%02d" % datetime_dict.day,
+			"%02d" % datetime_dict.hour,
+			"%02d" % datetime_dict.minute,
+			"%02d" % datetime_dict.second,
 		]
 	)
 	return output
@@ -58,9 +61,10 @@ func _log_message(
 		timestamp = "[%s]" % _get_timestamp()
 
 	var output := (
-		"%s[%s] %s"
+		"%s[%s][%s] %s"
 		% [
 			timestamp,
+			_get_log_level_key(level),
 			category,
 			message,
 		]
@@ -75,7 +79,7 @@ func _log_message(
 
 		LogLevel.WARN:
 			# print_warn doesn't exist for some reason
-			print_rich("[color=#FFDE66][b]WARNING:[/b] %s" % output)
+			print_rich("[color=#FFDE66]%s" % output)
 
 		LogLevel.ERROR:
 			printerr(output)
