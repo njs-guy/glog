@@ -1,7 +1,5 @@
 extends Node
 
-# TODO: output to file
-
 ## The logging level.
 enum LogLevel {
 	## Only used for debugging. Includes traceback. Hidden by default.
@@ -42,10 +40,12 @@ func _get_timestamp() -> String:
 
 	var datetime_dict := Time.get_datetime_dict_from_system()
 	var output = (
-		"%s.%s.%s %s:%s:%s"
+		"%s%s%s%s%s %s:%s:%s"
 		% [
 			datetime_dict.year,
+			config.date_separator,
 			"%02d" % datetime_dict.month,
+			config.date_separator,
 			"%02d" % datetime_dict.day,
 			"%02d" % datetime_dict.hour,
 			"%02d" % datetime_dict.minute,
