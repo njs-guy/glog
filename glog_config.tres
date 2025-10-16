@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GlogConfig" load_steps=2 format=3 uid="uid://c7qdqldt8s536"]
+[gd_resource type="Resource" script_class="GlogConfig" load_steps=2 format=3 uid="uid://bqs430krodu6d"]
 
 [ext_resource type="Script" uid="uid://bjk0lorj4bilr" path="res://addons/glog/src/glog_config.gd" id="1_ygruf"]
 

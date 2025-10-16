@@ -14,9 +14,27 @@ enum LogLevel {
 	NONE,
 }
 
-var config := preload("uid://c6u2ab2cl8qk7")
+const CONFIG_PATH := "res://glog_config.tres"
 
-# TODO: _try_load_config()
+var config: GlogConfig
+
+
+## Loads [code]res://glog_config.tres[/code]
+## if it exists. Loads default config if it does not.
+func _try_load_config() -> void:
+	if ResourceLoader.exists(CONFIG_PATH):
+		config = load(CONFIG_PATH)
+		info(
+			"glog",
+			"Found glog_config.tres. Loaded config.",
+		)
+	else:
+		# Uses path so that it isn't dependent on any UID's.
+		config = load("res://addons/glog/src/default_glog_config.tres")
+		info(
+			"glog",
+			"glog_config.tres not found. Loaded default config.",
+		)
 
 
 ## Returns [code]true[/code] if the log_level is enabled.
@@ -113,5 +131,6 @@ func error(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.ERROR):
 		_log_message(category, message, LogLevel.ERROR)
 
-# func _ready() -> void:
-# 	config = preload("res://addons/glog/src/default_glog_config.tres")
+
+func _ready() -> void:
+	_try_load_config()
