@@ -1,27 +1,32 @@
 extends Node
 
 # TODO: output to file
-# TODO: config file
 
+## The logging level.
 enum LogLevel {
+	## Only used for debugging. Includes traceback. Hidden by default.
 	DEBUG,
+	## Normal level. Same as a normal [code]print()[/code].
 	INFO,
+	## Warning. Prints in yellow.
 	WARN,
+	## Error. Same as a normal [code]printerr()[/code].
 	ERROR,
+	## Hides everything.
 	NONE,
 }
 
-@export var log_level := LogLevel.INFO
-@export var include_timestamp := true
-# @export var output_to_file := false
+var config := preload("uid://c6u2ab2cl8qk7")
+
+# TODO: _try_load_config()
 
 
 ## Returns [code]true[/code] if the log_level is enabled.
 func _check_log_level(level_to_check: LogLevel) -> bool:
-	if log_level == LogLevel.NONE:
+	if config.log_level == LogLevel.NONE:
 		return false
 
-	if log_level > level_to_check:
+	if config.log_level > level_to_check:
 		return false
 
 	return true
@@ -32,7 +37,7 @@ func _get_log_level_key(level: LogLevel) -> String:
 
 
 func _get_timestamp() -> String:
-	if !include_timestamp:
+	if !config.include_timestamp:
 		return ""
 
 	var datetime_dict := Time.get_datetime_dict_from_system()
@@ -57,7 +62,7 @@ func _log_message(
 ) -> void:
 	var timestamp = ""
 
-	if include_timestamp:
+	if config.include_timestamp:
 		timestamp = "[%s]" % _get_timestamp()
 
 	var output := (
@@ -107,3 +112,6 @@ func warn(category: String, message: String) -> void:
 func error(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.ERROR):
 		_log_message(category, message, LogLevel.ERROR)
+
+# func _ready() -> void:
+# 	config = preload("res://addons/glog/src/default_glog_config.tres")

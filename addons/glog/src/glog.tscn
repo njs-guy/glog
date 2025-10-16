@@ -4,4 +4,3 @@
 
 [node name="Glog" type="Node"]
 script = ExtResource("1_mqrwh")
-log_level = 0
