@@ -24,17 +24,19 @@ var config: GlogConfig
 func _try_load_config() -> void:
 	if ResourceLoader.exists(CONFIG_PATH):
 		config = load(CONFIG_PATH)
-		info(
-			"glog",
-			"Found glog_config.tres. Loaded config.",
-		)
+		if config.show_init_message:
+			info(
+				"glog",
+				"Found glog_config.tres. Loaded config.",
+			)
 	else:
 		# Uses path so that it isn't dependent on any UID's.
 		config = load("res://addons/glog/src/default_glog_config.tres")
-		info(
-			"glog",
-			"glog_config.tres not found. Loaded default config.",
-		)
+		if config.show_init_message:
+			info(
+				"glog",
+				"glog_config.tres not found. Loaded default config.",
+			)
 
 
 ## Returns [code]true[/code] if the log_level is enabled.

@@ -19,6 +19,10 @@ enum LogLevel {
 ## For example, setting this to [code]Warn[/code]
 ## will hide all Info and Debug logs.
 @export var log_level := LogLevel.INFO
+## If true, shows a message at startup
+## saying whether the default or custom
+## config was loaded.
+@export var show_init_message := true
 ## Whether to include the timestamp in the output.
 @export var include_timestamp := true
 @export_category("Timestamp settings")
