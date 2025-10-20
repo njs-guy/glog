@@ -28,10 +28,6 @@ const DEFAULT_CONFIG := {
 
 const CATEGORY_NAME = "glog"
 
-const CONFIG_PATH := "res://glog_config.tres"
-
-var config_res: GlogConfig
-
 
 func _show_init_message() -> void:
 	var show_init_message := ProjectSettings.get_setting(
@@ -40,26 +36,6 @@ func _show_init_message() -> void:
 
 	if show_init_message:
 		info(CATEGORY_NAME, "glog loaded successfully.")
-
-
-## Loads [code]res://glog_config.tres[/code]
-## if it exists. Loads default config_res if it does not.
-func _try_load_config_res() -> void:
-	if ResourceLoader.exists(CONFIG_PATH):
-		config_res = load(CONFIG_PATH)
-		if config_res.show_init_message:
-			info(
-				CATEGORY_NAME,
-				"Found glog_config.tres. Loaded config_res.",
-			)
-	else:
-		# Uses path so that it isn't dependent on any UID's.
-		config_res = load("res://addons/glog/src/default_glog_config.tres")
-		if config_res.show_init_message:
-			info(
-				CATEGORY_NAME,
-				"glog_config.tres not found. Loaded default config_res.",
-			)
 
 
 ## Returns [code]true[/code] if the log_level is enabled.
@@ -214,5 +190,4 @@ func error(category: String, message: String) -> void:
 
 
 func _ready() -> void:
-	_try_load_config_res()
 	_show_init_message()
