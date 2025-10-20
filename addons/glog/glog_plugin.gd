@@ -73,7 +73,7 @@ func _add_settings() -> void:
 func _enable_plugin() -> void:
 	add_autoload_singleton(
 		AUTOLOAD_NAME,
-		"res://addons/glog/src/glog.tscn",
+		"res://addons/glog/glog.tscn",
 	)
 
 
