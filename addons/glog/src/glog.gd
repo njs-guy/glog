@@ -105,9 +105,11 @@ func _log_message(
 		LogLevel.WARN:
 			# print_warn doesn't exist for some reason
 			print_rich("[color=#FFDE66]%s" % output)
+			push_warning(message)
 
 		LogLevel.ERROR:
 			printerr(output)
+			push_error(message)
 
 		LogLevel.NONE:
 			# Do nothing
