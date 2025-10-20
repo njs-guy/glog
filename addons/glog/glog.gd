@@ -16,9 +16,8 @@ enum LogLevel {
 	NONE,
 }
 
-# TODO: Don't duplicate this
 const DEFAULT_CONFIG := {
-	log_level = 1,  # Info
+	log_level = LogLevel.INFO,
 	show_init_message = true,
 	include_timestamp = true,
 	date_separator = ".",
