@@ -4,3 +4,37 @@
 
 [node name="TestScene" type="Node2D"]
 script = ExtResource("1_uhqqe")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -600.0
+offset_top = -153.5
+offset_right = 600.0
+offset_bottom = 153.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MessageLabel" type="RichTextLabel" parent="CanvasLayer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1200, 500)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 48
+bbcode_enabled = true
+text = "Wrote logs to LOGS.
+Press this button to quit."
+scroll_active = false
+autowrap_mode = 2
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Quit"
+
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
