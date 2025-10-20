@@ -16,49 +16,14 @@ enum LogLevel {
 	NONE,
 }
 
-const DEFAULT_CONFIG := {
-	log_level = LogLevel.INFO,
-	show_init_message = true,
-	include_timestamp = true,
-	date_separator = ".",
-	include_date = true,
-	include_time = true
-}
-
 const CATEGORY_NAME = "glog"
 
+var default_config: Dictionary = {}
 
-func get_glog_config_setting(key: String) -> Variant:
-	# Returns null if no setting was found
-	var output: Variant = null
 
-	match key:
-		"log_level":
-			output = ProjectSettings.get_setting(
-				"glog/config/general/log_level", DEFAULT_CONFIG.log_level
-			)
-		"show_init_message":
-			output = ProjectSettings.get_setting(
-				"glog/config/general/show_init_message", DEFAULT_CONFIG.show_init_message
-			)
-		"include_timestamp":
-			output = ProjectSettings.get_setting(
-				"glog/config/general/include_timestamp", DEFAULT_CONFIG.include_timestamp
-			)
-		"date_separator":
-			output = ProjectSettings.get_setting(
-				"glog/config/timestamps/date_separator", DEFAULT_CONFIG.date_separator
-			)
-		"include_date":
-			output = ProjectSettings.get_setting(
-				"glog/config/timestamps/include_date", DEFAULT_CONFIG.include_date
-			)
-		"include_time":
-			output = ProjectSettings.get_setting(
-				"glog/config/timestamps/include_time", DEFAULT_CONFIG.include_time
-			)
-
-	return output
+func _load_default_config() -> Dictionary:
+	var defaults := FileAccess.get_file_as_string("res://addons/glog/glog_config_default.json")
+	return JSON.parse_string(defaults)
 
 
 func _show_init_message() -> void:
@@ -185,6 +150,39 @@ func _log_message(
 			pass
 
 
+func get_glog_config_setting(key: String) -> Variant:
+	# Returns null if no setting was found
+	var output: Variant = null
+
+	match key:
+		"log_level":
+			output = ProjectSettings.get_setting(
+				"glog/config/general/log_level", default_config.log_level
+			)
+		"show_init_message":
+			output = ProjectSettings.get_setting(
+				"glog/config/general/show_init_message", default_config.show_init_message
+			)
+		"include_timestamp":
+			output = ProjectSettings.get_setting(
+				"glog/config/general/include_timestamp", default_config.include_timestamp
+			)
+		"date_separator":
+			output = ProjectSettings.get_setting(
+				"glog/config/timestamps/date_separator", default_config.date_separator
+			)
+		"include_date":
+			output = ProjectSettings.get_setting(
+				"glog/config/timestamps/include_date", default_config.include_date
+			)
+		"include_time":
+			output = ProjectSettings.get_setting(
+				"glog/config/timestamps/include_time", default_config.include_time
+			)
+
+	return output
+
+
 func debug(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.DEBUG):
 		_log_message(category, message, LogLevel.DEBUG)
@@ -206,4 +204,5 @@ func error(category: String, message: String) -> void:
 
 
 func _ready() -> void:
+	default_config = _load_default_config()
 	_show_init_message()

@@ -1,0 +1,8 @@
+{
+    "log_level": 1,
+    "show_init_message": true,
+    "include_timestamp": true,
+    "date_separator": ".",
+    "include_date": true,
+    "include_time": true
+}
