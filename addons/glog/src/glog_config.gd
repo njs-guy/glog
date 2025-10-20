@@ -31,15 +31,7 @@ enum LogLevel {
 ## [br] [code]2025/12/25[/code]
 ## [br] [code]2025-12-25[/code]
 @export_enum(".", "/", "-") var date_separator := "."
-## Whether to include the year in the timestamp.
-@export var include_year := true
-## Whether to include the month in the timestamp.
-@export var include_month := true
-## Whether to include the day in the timestamp.
-@export var include_day := true
-## Whether to include the hour in the timestamp.
-@export var include_hour := true
-## Whether to include the minute in the timestamp.
-@export var include_minute := true
-## Whether to include the seconds in the timestamp.
-@export var include_seconds := true
+## Whether to include the date in the timestamp.
+@export var include_date := true
+## Whether to include the time in the timestamp.
+@export var include_time := true

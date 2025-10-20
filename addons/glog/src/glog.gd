@@ -1,5 +1,7 @@
 extends Node
 
+# BUG: Stack traces lead back to this file instead of where the func was called.
+
 ## The logging level.
 enum LogLevel {
 	## Only used for debugging. Includes traceback. Hidden by default.
@@ -54,24 +56,54 @@ func _get_log_level_key(level: LogLevel) -> String:
 	return LogLevel.keys()[level]
 
 
-func _get_timestamp() -> String:
-	if !config.include_timestamp:
-		return ""
-
-	var datetime_dict := Time.get_datetime_dict_from_system()
+func _get_date(datetime_dict: Dictionary) -> String:
 	var output = (
-		"%s%s%s%s%s %s:%s:%s"
+		"%s%s%s%s%s"
 		% [
 			datetime_dict.year,
 			config.date_separator,
 			"%02d" % datetime_dict.month,
 			config.date_separator,
 			"%02d" % datetime_dict.day,
+		]
+	)
+
+	return output
+
+
+func _get_time(datetime_dict: Dictionary) -> String:
+	var output = (
+		"%s:%s:%s"
+		% [
 			"%02d" % datetime_dict.hour,
 			"%02d" % datetime_dict.minute,
 			"%02d" % datetime_dict.second,
 		]
 	)
+
+	return output
+
+
+func _get_timestamp() -> String:
+	if not config.include_timestamp:
+		return ""
+
+	var datetime_dict := Time.get_datetime_dict_from_system()
+
+	var date := ""
+	var time := ""
+
+	if config.include_date:
+		date = _get_date(datetime_dict)
+
+	if config.include_time:
+		time = _get_time(datetime_dict)
+
+		# Add a space when both time AND date are included.
+		if config.include_date:
+			time = " " + time
+
+	var output = "%s%s" % [date, time]
 	return output
 
 
