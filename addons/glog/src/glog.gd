@@ -34,7 +34,7 @@ var config_res: GlogConfig
 
 
 func _show_init_message() -> void:
-	var show_init_message = ProjectSettings.get_setting(
+	var show_init_message := ProjectSettings.get_setting(
 		"glog/config/general/show_init_message", DEFAULT_CONFIG.show_init_message
 	)
 
@@ -82,13 +82,17 @@ func _get_log_level_key(level: LogLevel) -> String:
 
 
 func _get_date(datetime_dict: Dictionary) -> String:
+	var date_separator := ProjectSettings.get_setting(
+		"glog/config/timestamps/date_separator", DEFAULT_CONFIG.date_separator
+	)
+
 	var output = (
 		"%s%s%s%s%s"
 		% [
 			datetime_dict.year,
-			config_res.date_separator,
+			date_separator,
 			"%02d" % datetime_dict.month,
-			config_res.date_separator,
+			date_separator,
 			"%02d" % datetime_dict.day,
 		]
 	)
@@ -110,7 +114,19 @@ func _get_time(datetime_dict: Dictionary) -> String:
 
 
 func _get_timestamp() -> String:
-	if not config_res.include_timestamp:
+	var include_timestamp: bool = ProjectSettings.get_setting(
+		"glog/config/general/include_timestamp", DEFAULT_CONFIG.include_timestamp
+	)
+
+	var include_date: bool = ProjectSettings.get_setting(
+		"glog/config/timestamps/include_date", DEFAULT_CONFIG.include_date
+	)
+
+	var include_time: bool = ProjectSettings.get_setting(
+		"glog/config/timestamps/include_time", DEFAULT_CONFIG.include_time
+	)
+
+	if not include_timestamp:
 		return ""
 
 	var datetime_dict := Time.get_datetime_dict_from_system()
@@ -118,14 +134,14 @@ func _get_timestamp() -> String:
 	var date := ""
 	var time := ""
 
-	if config_res.include_date:
+	if include_date:
 		date = _get_date(datetime_dict)
 
-	if config_res.include_time:
+	if include_time:
 		time = _get_time(datetime_dict)
 
 		# Add a space when both time AND date are included.
-		if config_res.include_date:
+		if include_date:
 			time = " " + time
 
 	var output = "%s%s" % [date, time]
@@ -137,9 +153,13 @@ func _log_message(
 	message: String,
 	level := LogLevel.INFO,
 ) -> void:
+	var include_timestamp: bool = ProjectSettings.get_setting(
+		"glog/config/general/include_timestamp", DEFAULT_CONFIG.include_timestamp
+	)
+
 	var timestamp = ""
 
-	if config_res.include_timestamp:
+	if include_timestamp:
 		timestamp = "[%s]" % _get_timestamp()
 
 	var output := (
