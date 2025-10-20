@@ -26,9 +26,20 @@ const DEFAULT_CONFIG := {
 	include_time = true
 }
 
+const CATEGORY_NAME = "glog"
+
 const CONFIG_PATH := "res://glog_config.tres"
 
 var config_res: GlogConfig
+
+
+func _show_init_message() -> void:
+	var show_init_message = ProjectSettings.get_setting(
+		"glog/config/general/show_init_message", DEFAULT_CONFIG.show_init_message
+	)
+
+	if show_init_message:
+		info(CATEGORY_NAME, "glog loaded successfully.")
 
 
 ## Loads [code]res://glog_config.tres[/code]
@@ -38,7 +49,7 @@ func _try_load_config_res() -> void:
 		config_res = load(CONFIG_PATH)
 		if config_res.show_init_message:
 			info(
-				"glog",
+				CATEGORY_NAME,
 				"Found glog_config.tres. Loaded config_res.",
 			)
 	else:
@@ -46,7 +57,7 @@ func _try_load_config_res() -> void:
 		config_res = load("res://addons/glog/src/default_glog_config.tres")
 		if config_res.show_init_message:
 			info(
-				"glog",
+				CATEGORY_NAME,
 				"glog_config.tres not found. Loaded default config_res.",
 			)
 
@@ -184,3 +195,4 @@ func error(category: String, message: String) -> void:
 
 func _ready() -> void:
 	_try_load_config_res()
+	_show_init_message()
