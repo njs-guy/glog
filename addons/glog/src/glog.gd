@@ -16,37 +16,51 @@ enum LogLevel {
 	NONE,
 }
 
+# TODO: Don't duplicate this
+const DEFAULT_CONFIG := {
+	log_level = 1,  # Info
+	show_init_message = true,
+	include_timestamp = true,
+	date_separator = ".",
+	include_date = true,
+	include_time = true
+}
+
 const CONFIG_PATH := "res://glog_config.tres"
 
-var config: GlogConfig
+var config_res: GlogConfig
 
 
 ## Loads [code]res://glog_config.tres[/code]
-## if it exists. Loads default config if it does not.
-func _try_load_config() -> void:
+## if it exists. Loads default config_res if it does not.
+func _try_load_config_res() -> void:
 	if ResourceLoader.exists(CONFIG_PATH):
-		config = load(CONFIG_PATH)
-		if config.show_init_message:
+		config_res = load(CONFIG_PATH)
+		if config_res.show_init_message:
 			info(
 				"glog",
-				"Found glog_config.tres. Loaded config.",
+				"Found glog_config.tres. Loaded config_res.",
 			)
 	else:
 		# Uses path so that it isn't dependent on any UID's.
-		config = load("res://addons/glog/src/default_glog_config.tres")
-		if config.show_init_message:
+		config_res = load("res://addons/glog/src/default_glog_config.tres")
+		if config_res.show_init_message:
 			info(
 				"glog",
-				"glog_config.tres not found. Loaded default config.",
+				"glog_config.tres not found. Loaded default config_res.",
 			)
 
 
 ## Returns [code]true[/code] if the log_level is enabled.
 func _check_log_level(level_to_check: LogLevel) -> bool:
-	if config.log_level == LogLevel.NONE:
+	var config_log_level = ProjectSettings.get_setting(
+		"glog/config/general/log_level", DEFAULT_CONFIG.log_level
+	)
+
+	if config_log_level == LogLevel.NONE:
 		return false
 
-	if config.log_level > level_to_check:
+	if config_log_level > level_to_check:
 		return false
 
 	return true
@@ -61,9 +75,9 @@ func _get_date(datetime_dict: Dictionary) -> String:
 		"%s%s%s%s%s"
 		% [
 			datetime_dict.year,
-			config.date_separator,
+			config_res.date_separator,
 			"%02d" % datetime_dict.month,
-			config.date_separator,
+			config_res.date_separator,
 			"%02d" % datetime_dict.day,
 		]
 	)
@@ -85,7 +99,7 @@ func _get_time(datetime_dict: Dictionary) -> String:
 
 
 func _get_timestamp() -> String:
-	if not config.include_timestamp:
+	if not config_res.include_timestamp:
 		return ""
 
 	var datetime_dict := Time.get_datetime_dict_from_system()
@@ -93,14 +107,14 @@ func _get_timestamp() -> String:
 	var date := ""
 	var time := ""
 
-	if config.include_date:
+	if config_res.include_date:
 		date = _get_date(datetime_dict)
 
-	if config.include_time:
+	if config_res.include_time:
 		time = _get_time(datetime_dict)
 
 		# Add a space when both time AND date are included.
-		if config.include_date:
+		if config_res.include_date:
 			time = " " + time
 
 	var output = "%s%s" % [date, time]
@@ -114,7 +128,7 @@ func _log_message(
 ) -> void:
 	var timestamp = ""
 
-	if config.include_timestamp:
+	if config_res.include_timestamp:
 		timestamp = "[%s]" % _get_timestamp()
 
 	var output := (
@@ -169,4 +183,4 @@ func error(category: String, message: String) -> void:
 
 
 func _ready() -> void:
-	_try_load_config()
+	_try_load_config_res()

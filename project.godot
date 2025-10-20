@@ -22,3 +22,7 @@ Glog="*res://addons/glog/src/glog.tscn"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/glog/plugin.cfg")
+
+[glog]
+
+config/general/log_level=0

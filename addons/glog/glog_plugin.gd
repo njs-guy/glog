@@ -46,7 +46,7 @@ func _add_settings() -> void:
 			"name": LOG_LEVEL_PATH,
 			"type": TYPE_INT,
 			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": "Debug,Info,Warning,Error"
+			"hint_string": "Debug,Info,Warning,Error,None"
 		}
 	)
 	ProjectSettings.set_initial_value(LOG_LEVEL_PATH, DEFAULT_CONFIG.log_level)
@@ -83,9 +83,3 @@ func _disable_plugin() -> void:
 
 func _enter_tree() -> void:
 	_add_settings()
-
-
-func _exit_tree() -> void:
-	# Clean-up of the plugin goes here.|
-	# TODO: Remove settings
-	pass
