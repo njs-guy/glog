@@ -99,9 +99,6 @@ func _get_timestamp() -> String:
 	if not include_timestamp:
 		return ""
 
-	if not include_date and not include_time:
-		return ""
-
 	var datetime_dict := Time.get_datetime_dict_from_system()
 
 	var date := ""
