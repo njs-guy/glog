@@ -27,16 +27,21 @@ enum ConfigSetting {
 	INCLUDE_TIME,
 }
 
+## Name used for log statements internally made by Glog.
+## Does not effect logging API.
 const CATEGORY_NAME = "glog"
 
+## Where the default settings are stored.
 var default_config: Dictionary = {}
 
 
+## Loads [code]glog_config_default.json[/code]
 func _load_default_config() -> Dictionary:
 	var defaults := FileAccess.get_file_as_string("res://addons/glog/glog_config_default.json")
 	return JSON.parse_string(defaults)
 
 
+## Shows the [code]glog loaded successfully[/code] message
 func _show_init_message() -> void:
 	var show_init_message: int = _get_glog_config_setting(ConfigSetting.SHOW_INIT_MESSAGE)
 
@@ -57,10 +62,12 @@ func _check_log_level(level_to_check: LogLevel) -> bool:
 	return true
 
 
+## Returns the name of the [enum LogLevel].
 func _get_log_level_key(level: LogLevel) -> String:
 	return LogLevel.keys()[level]
 
 
+## Returns the current date as a String.
 func _get_date(datetime_dict: Dictionary) -> String:
 	var date_separator: String = _get_glog_config_setting(ConfigSetting.DATE_SEPARATOR)
 
@@ -78,6 +85,7 @@ func _get_date(datetime_dict: Dictionary) -> String:
 	return output
 
 
+## Returns the current time as a String.
 func _get_time(datetime_dict: Dictionary) -> String:
 	var output = (
 		"%s:%s:%s"
@@ -91,6 +99,7 @@ func _get_time(datetime_dict: Dictionary) -> String:
 	return output
 
 
+## Returns a timestamp based on current config settings as a String.
 func _get_timestamp() -> String:
 	var include_timestamp: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIMESTAMP)
 	var include_date: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_DATE)
@@ -118,6 +127,7 @@ func _get_timestamp() -> String:
 	return output
 
 
+## Creates a message to be logged to output.
 func _log_message(
 	category: String,
 	message: String,
@@ -162,6 +172,7 @@ func _log_message(
 			pass
 
 
+## Reads the project settings file using the given [enum ConfigSetting].
 func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 	# Returns null if no setting was found
 	var output: Variant = null
@@ -195,21 +206,35 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 	return output
 
 
+## Logs a message containing debug information.
+## [br]Debug messages are not enabled by default.
+## [br]Enable this in [code]Project -> Project Settings... -> Glog/Config -> LogLevel[/code]
 func debug(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.DEBUG):
 		_log_message(category, message, LogLevel.DEBUG)
 
 
+## Logs a standard message to the console.
 func info(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.INFO):
 		_log_message(category, message, LogLevel.INFO)
 
 
+## Logs a warning to the console.
+## [br]Glog warnings are not real warnings
+## and cannot be filtered though Godot's console.
+## [br]For proper warning tracebacks,
+## follow this call with a [method @GlobalScope.push_warning]
+## with the same message.
 func warn(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.WARN):
 		_log_message(category, message, LogLevel.WARN)
 
 
+## Logs an error to the console.
+## [br]For proper error tracebacks,
+## follow this call with a [method @GlobalScope.push_error]
+## with the same message.
 func error(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.ERROR):
 		_log_message(category, message, LogLevel.ERROR)
