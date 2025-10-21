@@ -99,6 +99,9 @@ func _get_timestamp() -> String:
 	if not include_timestamp:
 		return ""
 
+	if not include_date and not include_time:
+		return ""
+
 	var datetime_dict := Time.get_datetime_dict_from_system()
 
 	var date := ""
@@ -124,11 +127,14 @@ func _log_message(
 	level := LogLevel.INFO,
 ) -> void:
 	var include_timestamp: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIMESTAMP)
+	var include_date: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_DATE)
+	var include_time: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIME)
 
 	var timestamp = ""
 
 	if include_timestamp:
-		timestamp = "[%s]" % _get_timestamp()
+		if include_date or include_time:
+			timestamp = "[%s]" % _get_timestamp()
 
 	var output := (
 		"%s[%s][%s] %s"
