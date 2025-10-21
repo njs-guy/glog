@@ -73,3 +73,10 @@ with a `push_warning()` or `push_error()` with the same message
 so that Godot's debugger can properly show you where the warning or error was.
 
 If anyone knows a workaround or fix, please let me know because it's driving me crazy.
+
+
+## Building
+
+1. Clone this repo. Usually with `git clone https://github.com/njs-guy/glog.git`.
+2. Open the `project.godot` file in Godot 4.5.1.
+3. Run the test scene with the play button in the top right corner.
