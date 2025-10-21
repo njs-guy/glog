@@ -1,3 +1,4 @@
+## A simple logger for Godot 4.
 extends Node
 
 # BUG: Stack traces lead back to this file instead of where the func was called.
@@ -16,6 +17,16 @@ enum LogLevel {
 	NONE,
 }
 
+## The potential settings to be called with [method Glog._get_glog_config_setting]
+enum ConfigSetting {
+	LOG_LEVEL,
+	SHOW_INIT_MESSAGE,
+	INCLUDE_TIMESTAMP,
+	DATE_SEPARATOR,
+	INCLUDE_DATE,
+	INCLUDE_TIME,
+}
+
 const CATEGORY_NAME = "glog"
 
 var default_config: Dictionary = {}
@@ -27,7 +38,7 @@ func _load_default_config() -> Dictionary:
 
 
 func _show_init_message() -> void:
-	var show_init_message: int = get_glog_config_setting("show_init_message")
+	var show_init_message: int = _get_glog_config_setting(ConfigSetting.SHOW_INIT_MESSAGE)
 
 	if show_init_message:
 		info(CATEGORY_NAME, "glog loaded successfully.")
@@ -35,7 +46,7 @@ func _show_init_message() -> void:
 
 ## Returns [code]true[/code] if the log_level is enabled.
 func _check_log_level(level_to_check: LogLevel) -> bool:
-	var config_log_level: int = get_glog_config_setting("log_level")
+	var config_log_level: int = _get_glog_config_setting(ConfigSetting.LOG_LEVEL)
 
 	if config_log_level == LogLevel.NONE:
 		return false
@@ -51,7 +62,7 @@ func _get_log_level_key(level: LogLevel) -> String:
 
 
 func _get_date(datetime_dict: Dictionary) -> String:
-	var date_separator: String = get_glog_config_setting("date_separator")
+	var date_separator: String = _get_glog_config_setting(ConfigSetting.DATE_SEPARATOR)
 
 	var output = (
 		"%s%s%s%s%s"
@@ -81,9 +92,9 @@ func _get_time(datetime_dict: Dictionary) -> String:
 
 
 func _get_timestamp() -> String:
-	var include_timestamp: bool = get_glog_config_setting("include_timestamp")
-	var include_date: bool = get_glog_config_setting("include_date")
-	var include_time: bool = get_glog_config_setting("include_time")
+	var include_timestamp: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIMESTAMP)
+	var include_date: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_DATE)
+	var include_time: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIME)
 
 	if not include_timestamp:
 		return ""
@@ -112,7 +123,7 @@ func _log_message(
 	message: String,
 	level := LogLevel.INFO,
 ) -> void:
-	var include_timestamp: bool = get_glog_config_setting("include_timestamp")
+	var include_timestamp: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIMESTAMP)
 
 	var timestamp = ""
 
@@ -150,32 +161,32 @@ func _log_message(
 			pass
 
 
-func get_glog_config_setting(key: String) -> Variant:
+func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 	# Returns null if no setting was found
 	var output: Variant = null
 
 	match key:
-		"log_level":
+		ConfigSetting.LOG_LEVEL:
 			output = ProjectSettings.get_setting(
 				"glog/config/general/log_level", default_config.log_level
 			)
-		"show_init_message":
+		ConfigSetting.SHOW_INIT_MESSAGE:
 			output = ProjectSettings.get_setting(
 				"glog/config/general/show_init_message", default_config.show_init_message
 			)
-		"include_timestamp":
+		ConfigSetting.INCLUDE_TIMESTAMP:
 			output = ProjectSettings.get_setting(
 				"glog/config/general/include_timestamp", default_config.include_timestamp
 			)
-		"date_separator":
+		ConfigSetting.DATE_SEPARATOR:
 			output = ProjectSettings.get_setting(
 				"glog/config/timestamps/date_separator", default_config.date_separator
 			)
-		"include_date":
+		ConfigSetting.INCLUDE_DATE:
 			output = ProjectSettings.get_setting(
 				"glog/config/timestamps/include_date", default_config.include_date
 			)
-		"include_time":
+		ConfigSetting.INCLUDE_TIME:
 			output = ProjectSettings.get_setting(
 				"glog/config/timestamps/include_time", default_config.include_time
 			)
