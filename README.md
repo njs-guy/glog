@@ -4,9 +4,12 @@ A simple logger for [Godot Engine 4](https://godotengine.org/).
 
 ## Installation
 
-1. Put the addon directory into the addons folder for your project. TODO
-2. Enable the addon through `Project -> Project Settings... -> Plugins -> Glog`.
-3. An autoload singleton will be added under the name `Glog`.
+### Manual
+1. Download the addon files from the [releases](https://github.com/njs-guy/glog/releases).
+2. Unzip the `glog.zip` file.
+3. Move the `glog` folder into your project under `addons/`.
+3. Enable the addon through `Project -> Project Settings... -> Plugins -> Glog`.
+4. An autoload singleton will be added under the name `Glog`.
 
 ## Usage
 
