@@ -5,11 +5,25 @@ A simple logger for [Godot Engine 4](https://godotengine.org/).
 ## Installation
 
 ### Manual
+
 1. Download the addon files from the [releases](https://github.com/njs-guy/glog/releases).
 2. Unzip the `glog.zip` file.
 3. Move the `glog` folder into your project under `addons/`.
 3. Enable the addon through `Project -> Project Settings... -> Plugins -> Glog`.
 4. An autoload singleton will be added under the name `Glog`.
+
+### Minimum Godot version
+
+TL;DR `Godot 4.1.4`
+
+Glog should work with Godot 4.1.4 or newer out of the box,
+but you may get a few warnings about invalid UID's.
+This warning can be safely ignored
+as long as the addon is working as expected.
+
+Glog will work on 4.0.4 if you disable a few lines in `addons/glog/glog_plugin.gd`
+that set the config settings as a basic setting.
+After that, you'll need to enable advanced settings to change the config.
 
 ## Usage
 
