@@ -12,7 +12,9 @@ func _ready() -> void:
 	Glog.debug("rng", "Rolled 50")
 	Glog.info("shop", "Player bought Holy Grail for 100G.")
 	Glog.warn("flags", "Grandma is about to explode.")
+	push_warning("Grandma is about to explode.")
 	Glog.error("player", "Could not find PlayerController.")
+	push_error("Could not find PlayerController.")
 
 
 func _on_quit_button_pressed() -> void:
