@@ -2,6 +2,7 @@
 
 ## v1.0.1 (2025/10/22)
 
+- No longer logs debug messages when debugging isn't available.
 - Removed traceback from `Glog.debug()`.
 
 Due to how tracebacks work in Godot, this always led back to
