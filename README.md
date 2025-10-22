@@ -57,6 +57,19 @@ The default settings should be fine for most use cases, but you may
 want to change the Log Level to Debug to output more debugging information.
 How you set up what's logged is up to you.
 
+### General
+
+- Log Level: The lowest logging level to write to output. Defaults to Info.
+- Show Init Message: Whether to show the `glog loaded successfully` message at startup.
+Defaults to true.
+- Include Timestamp: Whether to print a timestamp for each log. Defaults to true.
+
+### Timestamps
+
+- Date Separator: What character to use to separate date numbers. Defaults to ".".
+- Include Date: Whether to include a date in the timestamp. Defaults to true.
+- Include Time: Whether to include the time in the timestamp. Defaults to true.
+
 ## Writing output to file
 
 By default, Godot automatically outputs log files.
