@@ -28,8 +28,6 @@ func _add_bool_setting(name: String, default_value: bool, is_timestamp_setting :
 
 
 func _add_settings() -> void:
-	# TODO: add descriptions
-
 	const LOG_LEVEL_PATH := "glog/config/general/log_level"
 	const DATE_SEPARATOR_PATH := "glog/config/timestamps/date_separator"
 

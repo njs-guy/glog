@@ -154,10 +154,7 @@ func _log_message(
 	)
 
 	match level:
-		LogLevel.DEBUG:
-			print_debug(output)
-
-		LogLevel.INFO:
+		LogLevel.DEBUG, LogLevel.INFO:
 			print(output)
 
 		LogLevel.WARN:
@@ -209,9 +206,13 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 ## Logs a message containing debug information.
 ## [br]Debug messages are not enabled by default.
 ## [br]Enable this in [code]Project -> Project Settings... -> Glog/Config -> LogLevel[/code]
+## [br]For proper tracebacks,
+## follow this call with a [method @GlobalScope.print_debug]
+## with the same message.
 func debug(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.DEBUG):
-		_log_message(category, message, LogLevel.DEBUG)
+		if OS.has_feature("debug"):
+			_log_message(category, message, LogLevel.DEBUG)
 
 
 ## Logs a standard message to the console.
