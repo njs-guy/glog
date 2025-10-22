@@ -109,3 +109,9 @@ If anyone knows a workaround or fix, please let me know because it's driving me 
 and select `Import` in the top left corner.
 3. Select the `project.godot` from the root folder and click `Open`.
 4. Run the test scene with the play button in the top right corner.
+
+## License
+
+All code in this repo, unless otherwise stated, is licensed under the [MIT License](LICENSE.txt).
+
+All assets in the assets folder, unless otherwise stated, are licensed under the [CC0-1.0 License](./assets/LICENSE.txt).
