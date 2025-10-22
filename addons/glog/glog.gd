@@ -211,7 +211,8 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 ## with the same message.
 func debug(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.DEBUG):
-		_log_message(category, message, LogLevel.DEBUG)
+		if OS.has_feature("debug"):
+			_log_message(category, message, LogLevel.DEBUG)
 
 
 ## Logs a standard message to the console.
