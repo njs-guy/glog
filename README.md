@@ -92,5 +92,7 @@ If anyone knows a workaround or fix, please let me know because it's driving me 
 ## Building
 
 1. Clone this repo. Usually with `git clone https://github.com/njs-guy/glog.git`.
-2. Open the `project.godot` file in Godot 4.5.1.
-3. Run the test scene with the play button in the top right corner.
+2. Open [Godot 4.5.1](https://godotengine.org/download/archive/4.5.1-stable/)
+and select `Import` in the top left corner.
+3. Select the `project.godot` from the root folder and click `Open`.
+4. Run the test scene with the play button in the top right corner.
