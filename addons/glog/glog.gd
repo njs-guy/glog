@@ -17,7 +17,7 @@ enum LogLevel {
 	NONE,
 }
 
-# TODO: Settings for include_script_filename and default colors
+# TODO: Settings for include_script_filename, include_debug_traceback, and default colors
 
 ## The potential settings to be called with [method Glog._get_glog_config_setting]
 enum ConfigSetting {
@@ -40,7 +40,10 @@ const DEFAULT_CONFIG := {
 	include_timestamp = true,
 	date_separator = ".",
 	include_date = true,
-	include_time = true
+	include_time = true,
+	debug_color = "#70BAFA",
+	info_color = "#478CBF",
+	warn_color = "#FFDE66"
 }
 
 ########## LOGGING ##########
@@ -168,26 +171,46 @@ func _log_message(
 	else:
 		output_category = category
 
-	var output := (
-		"%s[%s][%s] %s"
-		% [
-			timestamp,
-			_get_log_level_key(level),
-			output_category,
-			message,
-		]
-	)
+	# TODO: Clean up color printing
+
+	var output = [timestamp, _get_log_level_key(level), output_category, message]
+	var output_string := "%s[%s][%s] %s" % [output[0], output[1], output[2], output[3]]
 
 	match level:
-		LogLevel.DEBUG, LogLevel.INFO:
-			print(output)
+		LogLevel.DEBUG:
+			print_rich(
+				(
+					"[color=%s]%s[%s][%s][/color] %s"
+					% [
+						DEFAULT_CONFIG.debug_color,
+						timestamp,
+						_get_log_level_key(level),
+						output_category,
+						message
+					]
+				)
+			)
+
+		LogLevel.INFO:
+			print_rich(
+				(
+					"[color=%s]%s[%s][%s][/color] %s"
+					% [
+						DEFAULT_CONFIG.info_color,
+						timestamp,
+						_get_log_level_key(level),
+						output_category,
+						message
+					]
+				)
+			)
 
 		LogLevel.WARN:
-			# print_warn doesn't exist for some reason
-			print_rich("[color=#FFDE66]%s" % output)
+			# printwarn doesn't exist for some reason
+			print_rich("[color=%s]%s" % [DEFAULT_CONFIG.warn_color, output_string])
 
 		LogLevel.ERROR:
-			printerr(output)
+			printerr(output_string)
 
 		LogLevel.NONE:
 			# Do nothing
