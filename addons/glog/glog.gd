@@ -146,6 +146,33 @@ func _get_script_caller(include_filename := false) -> String:
 	return source_filename.get_basename()
 
 
+func _get_output_string(
+	timestamp: String,
+	log_level: LogLevel,
+	category: String,
+	message: String,
+	print_color := false,
+	color_message := false,
+	color := "",
+) -> String:
+	var meta := "%s[%s][%s]" % [timestamp, _get_log_level_key(log_level), category]
+
+	var output := ""
+
+	if print_color:
+		if color_message:
+			# Print color, print colored message
+			output = "[color=%s]%s %s" % [color, meta, message]
+		else:
+			# Print color, message has no color
+			output = "[color=%s]%s[/color] %s" % [color, meta, message]
+	else:
+		# No color
+		output = "%s %s" % [meta, message]
+
+	return output
+
+
 ## Creates a message to be logged to output.
 func _log_message(
 	category: String,
@@ -171,46 +198,56 @@ func _log_message(
 	else:
 		output_category = category
 
-	# TODO: Clean up color printing
-
-	var output = [timestamp, _get_log_level_key(level), output_category, message]
-	var output_string := "%s[%s][%s] %s" % [output[0], output[1], output[2], output[3]]
-
 	match level:
 		LogLevel.DEBUG:
 			print_rich(
-				(
-					"[color=%s]%s[%s][%s][/color] %s"
-					% [
-						DEFAULT_CONFIG.debug_color,
-						timestamp,
-						_get_log_level_key(level),
-						output_category,
-						message
-					]
+				_get_output_string(
+					timestamp,
+					level,
+					output_category,
+					message,
+					true,
+					false,
+					DEFAULT_CONFIG.debug_color,
 				)
 			)
 
 		LogLevel.INFO:
 			print_rich(
-				(
-					"[color=%s]%s[%s][%s][/color] %s"
-					% [
-						DEFAULT_CONFIG.info_color,
-						timestamp,
-						_get_log_level_key(level),
-						output_category,
-						message
-					]
+				_get_output_string(
+					timestamp,
+					level,
+					output_category,
+					message,
+					true,
+					false,
+					DEFAULT_CONFIG.info_color,
 				)
 			)
 
 		LogLevel.WARN:
 			# printwarn doesn't exist for some reason
-			print_rich("[color=%s]%s" % [DEFAULT_CONFIG.warn_color, output_string])
+			print_rich(
+				_get_output_string(
+					timestamp,
+					level,
+					output_category,
+					message,
+					true,
+					true,
+					DEFAULT_CONFIG.warn_color,
+				)
+			)
 
 		LogLevel.ERROR:
-			printerr(output_string)
+			printerr(
+				_get_output_string(
+					timestamp,
+					level,
+					output_category,
+					message,
+				)
+			)
 
 		LogLevel.NONE:
 			# Do nothing
