@@ -10,7 +10,7 @@ func _ready() -> void:
 	message_label.text = message % log_path
 
 	Glog.debug("rng", "Rolled 50")
-	Glog.info("shop", "Player bought Holy Grail for 100G.")
+	Glog.info("", "Player bought Holy Grail for 100G.")
 	Glog.warn("flags", "Grandma is about to explode.")
 	push_warning("Grandma is about to explode.")
 	Glog.error("player", "Could not find PlayerController.")

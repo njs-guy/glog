@@ -5,7 +5,7 @@ extends Node
 
 ## The logging level.
 enum LogLevel {
-	## Only used for debugging. Includes traceback. Hidden by default.
+	## Only used for debugging. Hidden by default.
 	DEBUG,
 	## Normal level. Same as a normal [code]print()[/code].
 	INFO,
@@ -40,6 +40,8 @@ const DEFAULT_CONFIG := {
 	include_date = true,
 	include_time = true
 }
+
+########## LOGGING ##########
 
 
 ## Shows the [code]glog loaded successfully[/code] message
@@ -128,6 +130,14 @@ func _get_timestamp() -> String:
 	return output
 
 
+func _get_script_caller() -> String:
+	# Gets the most recent call in the current stack.
+	# Basically, the filename of the script that called Glog.whatever()
+	var source_filename: String = get_stack().back()["source"].get_file()
+
+	return source_filename
+
+
 ## Creates a message to be logged to output.
 func _log_message(
 	category: String,
@@ -138,18 +148,27 @@ func _log_message(
 	var include_date: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_DATE)
 	var include_time: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIME)
 
-	var timestamp = ""
+	var timestamp := ""
 
 	if include_timestamp:
 		if include_date or include_time:
 			timestamp = "[%s]" % _get_timestamp()
+
+	var output_category := ""
+	var use_filename := false
+
+	if category == "":
+		use_filename = true
+		output_category = _get_script_caller()
+	else:
+		output_category = category
 
 	var output := (
 		"%s[%s][%s] %s"
 		% [
 			timestamp,
 			_get_log_level_key(level),
-			category,
+			output_category,
 			message,
 		]
 	)
@@ -168,6 +187,9 @@ func _log_message(
 		LogLevel.NONE:
 			# Do nothing
 			pass
+
+
+########## CONFIG ##########
 
 
 ## Reads the project settings file using the given [enum ConfigSetting].
@@ -259,6 +281,9 @@ static func _add_settings() -> void:
 
 	_add_bool_setting("include_date", DEFAULT_CONFIG.include_date, true)
 	_add_bool_setting("include_time", DEFAULT_CONFIG.include_time, true)
+
+
+########## PUBLIC API ##########
 
 
 ## Logs a message containing debug information.
