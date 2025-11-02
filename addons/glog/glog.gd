@@ -17,6 +17,8 @@ enum LogLevel {
 	NONE,
 }
 
+# TODO: Settings for include_script_filename and default colors
+
 ## The potential settings to be called with [method Glog._get_glog_config_setting]
 enum ConfigSetting {
 	LOG_LEVEL,
@@ -130,12 +132,15 @@ func _get_timestamp() -> String:
 	return output
 
 
-func _get_script_caller() -> String:
+func _get_script_caller(include_filename := false) -> String:
 	# Gets the most recent call in the current stack.
 	# Basically, the filename of the script that called Glog.whatever()
 	var source_filename: String = get_stack().back()["source"].get_file()
 
-	return source_filename
+	if include_filename:
+		return source_filename
+
+	return source_filename.get_basename()
 
 
 ## Creates a message to be logged to output.
