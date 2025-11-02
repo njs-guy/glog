@@ -31,14 +31,15 @@ enum ConfigSetting {
 ## Does not effect logging API.
 const CATEGORY_NAME = "glog"
 
-## Where the default settings are stored.
-var default_config: Dictionary = {}
-
-
-## Loads [code]glog_config_default.json[/code]
-func _load_default_config() -> Dictionary:
-	var defaults := FileAccess.get_file_as_string("res://addons/glog/glog_config_default.json")
-	return JSON.parse_string(defaults)
+## Default settings for Glog.
+const DEFAULT_CONFIG := {
+	log_level = 1,
+	show_init_message = true,
+	include_timestamp = true,
+	date_separator = ".",
+	include_date = true,
+	include_time = true
+}
 
 
 ## Shows the [code]glog loaded successfully[/code] message
@@ -177,30 +178,87 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 	match key:
 		ConfigSetting.LOG_LEVEL:
 			output = ProjectSettings.get_setting(
-				"glog/config/general/log_level", default_config.log_level
+				"glog/config/general/log_level", DEFAULT_CONFIG.log_level
 			)
 		ConfigSetting.SHOW_INIT_MESSAGE:
 			output = ProjectSettings.get_setting(
-				"glog/config/general/show_init_message", default_config.show_init_message
+				"glog/config/general/show_init_message", DEFAULT_CONFIG.show_init_message
 			)
 		ConfigSetting.INCLUDE_TIMESTAMP:
 			output = ProjectSettings.get_setting(
-				"glog/config/general/include_timestamp", default_config.include_timestamp
+				"glog/config/general/include_timestamp", DEFAULT_CONFIG.include_timestamp
 			)
 		ConfigSetting.DATE_SEPARATOR:
 			output = ProjectSettings.get_setting(
-				"glog/config/timestamps/date_separator", default_config.date_separator
+				"glog/config/timestamps/date_separator", DEFAULT_CONFIG.date_separator
 			)
 		ConfigSetting.INCLUDE_DATE:
 			output = ProjectSettings.get_setting(
-				"glog/config/timestamps/include_date", default_config.include_date
+				"glog/config/timestamps/include_date", DEFAULT_CONFIG.include_date
 			)
 		ConfigSetting.INCLUDE_TIME:
 			output = ProjectSettings.get_setting(
-				"glog/config/timestamps/include_time", default_config.include_time
+				"glog/config/timestamps/include_time", DEFAULT_CONFIG.include_time
 			)
 
 	return output
+
+
+static func _add_bool_setting(
+	name: String, default_value: bool, is_timestamp_setting := false
+) -> void:
+	var setting_path := ""
+
+	if is_timestamp_setting:
+		setting_path = "glog/config/timestamps/%s" % name
+	else:
+		setting_path = "glog/config/general/%s" % name
+
+	if not ProjectSettings.has_setting(setting_path):
+		ProjectSettings.set_setting(setting_path, default_value)
+
+	ProjectSettings.add_property_info({"name": setting_path, "type": TYPE_BOOL})
+	ProjectSettings.set_initial_value(setting_path, default_value)
+	ProjectSettings.set_as_basic(setting_path, true)
+
+
+static func _add_settings() -> void:
+	const LOG_LEVEL_PATH := "glog/config/general/log_level"
+	const DATE_SEPARATOR_PATH := "glog/config/timestamps/date_separator"
+
+	# general
+
+	# log_level
+	if not ProjectSettings.has_setting(LOG_LEVEL_PATH):
+		ProjectSettings.set_setting(LOG_LEVEL_PATH, DEFAULT_CONFIG.log_level)
+
+	ProjectSettings.add_property_info(
+		{
+			"name": LOG_LEVEL_PATH,
+			"type": TYPE_INT,
+			"hint": PROPERTY_HINT_ENUM,
+			"hint_string": "Debug,Info,Warning,Error,None"
+		}
+	)
+	ProjectSettings.set_initial_value(LOG_LEVEL_PATH, DEFAULT_CONFIG.log_level)
+	ProjectSettings.set_as_basic(LOG_LEVEL_PATH, true)
+
+	_add_bool_setting("show_init_message", DEFAULT_CONFIG.show_init_message)
+	_add_bool_setting("include_timestamp", DEFAULT_CONFIG.include_timestamp)
+
+	# timestamps
+
+	# date_separator
+
+	if not ProjectSettings.has_setting(DATE_SEPARATOR_PATH):
+		ProjectSettings.set_setting(DATE_SEPARATOR_PATH, DEFAULT_CONFIG.date_separator)
+
+	ProjectSettings.add_property_info({"name": DATE_SEPARATOR_PATH, "type": TYPE_STRING})
+	ProjectSettings.set_initial_value(DATE_SEPARATOR_PATH, DEFAULT_CONFIG.date_separator)
+	ProjectSettings.set_as_basic(DATE_SEPARATOR_PATH, true)
+
+	_add_bool_setting("include_date", DEFAULT_CONFIG.include_date, true)
+	_add_bool_setting("include_time", DEFAULT_CONFIG.include_time, true)
 
 
 ## Logs a message containing debug information.
@@ -242,5 +300,4 @@ func error(category: String, message: String) -> void:
 
 
 func _ready() -> void:
-	default_config = _load_default_config()
 	_show_init_message()
