@@ -19,7 +19,7 @@ enum LogLevel {
 
 # TODO: More settings
 # include_script_filename, include_line_number_in_category,
-# include_debug_traceback, iso_timestamps, and default colors
+# include_debug_traceback, show_debug_messages_in_release, iso_timestamps, and default colors
 
 ## The potential settings to be called with [method Glog._get_glog_config_setting]
 enum ConfigSetting {
@@ -43,7 +43,7 @@ const CATEGORY_NAME = "glog"
 
 ## Default settings for Glog.
 const DEFAULT_CONFIG := {
-	log_level = 1,
+	log_level = LogLevel.DEBUG,
 	show_init_message = true,
 	include_timestamp = true,
 	date_separator = ".",
@@ -414,11 +414,7 @@ static func _add_settings() -> void:
 
 
 ## Logs a message containing debug information.
-## [br]Debug messages are not enabled by default.
-## [br]Enable this in [code]Project -> Project Settings... -> Glog/Config -> LogLevel[/code]
-## [br]For proper tracebacks,
-## follow this call with a [method @GlobalScope.print_debug]
-## with the same message.
+## [br]Disabled in release builds by default.
 func debug(category: String, message: String, color := "") -> void:
 	if _check_log_level(LogLevel.DEBUG):
 		if OS.has_feature("debug"):
