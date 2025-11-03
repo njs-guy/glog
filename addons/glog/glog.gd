@@ -173,11 +173,34 @@ func _get_output_string(
 	return output
 
 
+func _check_color(color: String, level: LogLevel) -> String:
+	var printed_color := ""
+	var log_color := ""
+
+	match level:
+		LogLevel.DEBUG:
+			log_color = DEFAULT_CONFIG.debug_color
+		LogLevel.INFO:
+			log_color = DEFAULT_CONFIG.info_color
+		LogLevel.WARN:
+			log_color = DEFAULT_CONFIG.warn_color
+		_:
+			log_color = DEFAULT_CONFIG.info_color
+
+	if color == "":
+		printed_color = log_color
+	else:
+		printed_color = color
+
+	return printed_color
+
+
 ## Creates a message to be logged to output.
 func _log_message(
 	category: String,
 	message: String,
 	level := LogLevel.INFO,
+	color := "",
 ) -> void:
 	var include_timestamp: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIMESTAMP)
 	var include_date: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_DATE)
@@ -198,6 +221,8 @@ func _log_message(
 	else:
 		output_category = category
 
+	var printed_color := _check_color(color, level)
+
 	match level:
 		LogLevel.DEBUG:
 			print_rich(
@@ -208,7 +233,7 @@ func _log_message(
 					message,
 					true,
 					false,
-					DEFAULT_CONFIG.debug_color,
+					printed_color,
 				)
 			)
 
@@ -221,7 +246,7 @@ func _log_message(
 					message,
 					true,
 					false,
-					DEFAULT_CONFIG.info_color,
+					printed_color,
 				)
 			)
 
@@ -235,7 +260,7 @@ func _log_message(
 					message,
 					true,
 					true,
-					DEFAULT_CONFIG.warn_color,
+					printed_color,
 				)
 			)
 
@@ -357,16 +382,16 @@ static func _add_settings() -> void:
 ## [br]For proper tracebacks,
 ## follow this call with a [method @GlobalScope.print_debug]
 ## with the same message.
-func debug(category: String, message: String) -> void:
+func debug(category: String, message: String, color := "") -> void:
 	if _check_log_level(LogLevel.DEBUG):
 		if OS.has_feature("debug"):
-			_log_message(category, message, LogLevel.DEBUG)
+			_log_message(category, message, LogLevel.DEBUG, color)
 
 
 ## Logs a standard message to the console.
-func info(category: String, message: String) -> void:
+func info(category: String, message: String, color := "") -> void:
 	if _check_log_level(LogLevel.INFO):
-		_log_message(category, message, LogLevel.INFO)
+		_log_message(category, message, LogLevel.INFO, color)
 
 
 ## Logs a warning to the console.
@@ -375,9 +400,9 @@ func info(category: String, message: String) -> void:
 ## [br]For proper warning tracebacks,
 ## follow this call with a [method @GlobalScope.push_warning]
 ## with the same message.
-func warn(category: String, message: String) -> void:
+func warn(category: String, message: String, color := "") -> void:
 	if _check_log_level(LogLevel.WARN):
-		_log_message(category, message, LogLevel.WARN)
+		_log_message(category, message, LogLevel.WARN, color)
 
 
 ## Logs an error to the console.
