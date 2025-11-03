@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.1.0
+
+### New features
+
+- Info and Debug messages have colored timestamps, log levels, and categories. The messages are still the default output color.
+- The log category now defaults to the filename without the extension.
+
 ## v1.0.1 (2025/10/22)
 
 - No longer logs debug messages when debugging isn't available.
