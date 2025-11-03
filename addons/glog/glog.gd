@@ -29,6 +29,12 @@ enum ConfigSetting {
 	DATE_SEPARATOR,
 	INCLUDE_DATE,
 	INCLUDE_TIME,
+	INCLUDE_SCRIPT_FILE_EXTENSION,
+	INCLUDE_LINE_NUMBER,
+	INCLUDE_DEBUG_TRACEBACK,
+	DEBUG_COLOR,
+	INFO_COLOR,
+	WARN_COLOR,
 }
 
 ## Name used for log statements internally made by Glog.
@@ -43,6 +49,9 @@ const DEFAULT_CONFIG := {
 	date_separator = ".",
 	include_date = true,
 	include_time = true,
+	include_script_file_extension = true,
+	include_line_number = true,
+	include_debug_traceback = true,
 	debug_color = "#70BAFA",
 	info_color = "#478CBF",
 	warn_color = "#FFDE66"
@@ -305,6 +314,7 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 	var output: Variant = null
 
 	match key:
+		# General
 		ConfigSetting.LOG_LEVEL:
 			output = ProjectSettings.get_setting(
 				"glog/config/general/log_level", DEFAULT_CONFIG.log_level
@@ -313,10 +323,36 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 			output = ProjectSettings.get_setting(
 				"glog/config/general/show_init_message", DEFAULT_CONFIG.show_init_message
 			)
+		ConfigSetting.INCLUDE_SCRIPT_FILE_EXTENSION:
+			output = (
+				ProjectSettings
+				. get_setting(
+					"glog/config/general/include_script_file_extension",
+					DEFAULT_CONFIG.include_script_file_extension,
+				)
+			)
+		ConfigSetting.INCLUDE_LINE_NUMBER:
+			output = (
+				ProjectSettings
+				. get_setting(
+					"glog/config/general/include_line_number",
+					DEFAULT_CONFIG.include_line_number,
+				)
+			)
+		ConfigSetting.INCLUDE_DEBUG_TRACEBACK:
+			output = (
+				ProjectSettings
+				. get_setting(
+					"glog/config/general/include_debug_traceback",
+					DEFAULT_CONFIG.include_debug_traceback,
+				)
+			)
 		ConfigSetting.INCLUDE_TIMESTAMP:
 			output = ProjectSettings.get_setting(
 				"glog/config/general/include_timestamp", DEFAULT_CONFIG.include_timestamp
 			)
+
+		# Timestamps
 		ConfigSetting.DATE_SEPARATOR:
 			output = ProjectSettings.get_setting(
 				"glog/config/timestamps/date_separator", DEFAULT_CONFIG.date_separator
@@ -328,6 +364,20 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 		ConfigSetting.INCLUDE_TIME:
 			output = ProjectSettings.get_setting(
 				"glog/config/timestamps/include_time", DEFAULT_CONFIG.include_time
+			)
+
+		# Colors
+		ConfigSetting.DEBUG_COLOR:
+			output = ProjectSettings.get_setting(
+				"glog/config/colors/debug_color", DEFAULT_CONFIG.debug_color
+			)
+		ConfigSetting.INFO_COLOR:
+			output = ProjectSettings.get_setting(
+				"glog/config/colors/info_color", DEFAULT_CONFIG.info_color
+			)
+		ConfigSetting.WARN_COLOR:
+			output = ProjectSettings.get_setting(
+				"glog/config/colors/warn_color", DEFAULT_CONFIG.warn_color
 			)
 
 	return output
@@ -349,6 +399,20 @@ static func _add_bool_setting(
 	ProjectSettings.add_property_info({"name": setting_path, "type": TYPE_BOOL})
 	ProjectSettings.set_initial_value(setting_path, default_value)
 	ProjectSettings.set_as_basic(setting_path, true)
+
+
+static func _add_color_setting(name: String, default_value: String) -> void:
+	var setting_path = "glog/config/colors/%s" % name
+
+	if not ProjectSettings.has_setting(setting_path):
+		ProjectSettings.set_setting(setting_path, default_value)
+
+	ProjectSettings.add_property_info({"name": setting_path, "type": TYPE_COLOR})
+	ProjectSettings.set_initial_value(setting_path, default_value)
+	ProjectSettings.set_as_basic(setting_path, true)
+
+
+# TODO: add descriptions
 
 
 static func _add_settings() -> void:
@@ -373,6 +437,9 @@ static func _add_settings() -> void:
 	ProjectSettings.set_as_basic(LOG_LEVEL_PATH, true)
 
 	_add_bool_setting("show_init_message", DEFAULT_CONFIG.show_init_message)
+	_add_bool_setting("include_script_file_extension", DEFAULT_CONFIG.include_script_file_extension)
+	_add_bool_setting("include_line_number", DEFAULT_CONFIG.include_line_number)
+	_add_bool_setting("include_debug_traceback", DEFAULT_CONFIG.include_debug_traceback)
 	_add_bool_setting("include_timestamp", DEFAULT_CONFIG.include_timestamp)
 
 	# timestamps
@@ -388,6 +455,11 @@ static func _add_settings() -> void:
 
 	_add_bool_setting("include_date", DEFAULT_CONFIG.include_date, true)
 	_add_bool_setting("include_time", DEFAULT_CONFIG.include_time, true)
+
+	# Colors
+	_add_color_setting("debug_color", DEFAULT_CONFIG.debug_color)
+	_add_color_setting("info_color", DEFAULT_CONFIG.info_color)
+	_add_color_setting("warning_color", DEFAULT_CONFIG.warn_color)
 
 
 ########## PUBLIC API ##########
