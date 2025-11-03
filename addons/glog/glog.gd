@@ -17,7 +17,9 @@ enum LogLevel {
 	NONE,
 }
 
-# TODO: Settings for include_script_filename, include_debug_traceback, and default colors
+# TODO: More settings
+# include_script_filename, include_line_number_in_category,
+# include_debug_traceback, iso_timestamps, and default colors
 
 ## The potential settings to be called with [method Glog._get_glog_config_setting]
 enum ConfigSetting {
@@ -146,6 +148,12 @@ func _get_script_caller(include_filename := false) -> String:
 	return source_filename.get_basename()
 
 
+func _get_traceback() -> String:
+	var source: Dictionary = get_stack().back()
+
+	return "%s:%s:%s()" % [source["source"], source["line"], source["function"]]
+
+
 func _get_output_string(
 	timestamp: String,
 	log_level: LogLevel,
@@ -236,6 +244,7 @@ func _log_message(
 					printed_color,
 				)
 			)
+			_log_traceback()
 
 		LogLevel.INFO:
 			print_rich(
@@ -277,6 +286,10 @@ func _log_message(
 		LogLevel.NONE:
 			# Do nothing
 			pass
+
+
+func _log_traceback() -> void:
+	print("\t--> %s" % _get_traceback())
 
 
 ########## CONFIG ##########
