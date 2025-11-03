@@ -137,21 +137,27 @@ func _get_timestamp() -> String:
 	return output
 
 
-func _get_script_caller(include_filename := false) -> String:
+func _get_script_caller(include_file_ext := false, include_line_number := true) -> String:
 	# Gets the most recent call in the current stack.
 	# Basically, the filename of the script that called Glog.whatever()
-	var source_filename: String = get_stack().back()["source"].get_file()
+	var stack: Dictionary = get_stack().back()
+	var source_file: String = stack["source"].get_file()
 
-	if include_filename:
-		return source_filename
+	var line_number := ""
 
-	return source_filename.get_basename()
+	if include_line_number:
+		line_number = ":" + str(get_stack().back()["line"])
+
+	if include_file_ext:
+		return "%s%s" % [source_file, line_number]
+
+	return "%s%s" % [source_file.get_basename(), line_number]
 
 
 func _get_traceback() -> String:
-	var source: Dictionary = get_stack().back()
+	var stack: Dictionary = get_stack().back()
 
-	return "%s:%s:%s()" % [source["source"], source["line"], source["function"]]
+	return "%s:%s:%s()" % [stack["source"], stack["line"], stack["function"]]
 
 
 func _get_output_string(
@@ -221,10 +227,8 @@ func _log_message(
 			timestamp = "[%s]" % _get_timestamp()
 
 	var output_category := ""
-	var use_filename := false
 
 	if category == "":
-		use_filename = true
 		output_category = _get_script_caller()
 	else:
 		output_category = category
