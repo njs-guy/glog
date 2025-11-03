@@ -312,73 +312,21 @@ func _log_traceback() -> void:
 func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 	# Returns null if no setting was found
 	var output: Variant = null
+	var key_name := str(ConfigSetting.keys()[key]).to_lower()
+	var setting_category := ""
 
 	match key:
-		# General
-		ConfigSetting.LOG_LEVEL:
-			output = ProjectSettings.get_setting(
-				"glog/config/general/log_level", DEFAULT_CONFIG.log_level
-			)
-		ConfigSetting.SHOW_INIT_MESSAGE:
-			output = ProjectSettings.get_setting(
-				"glog/config/general/show_init_message", DEFAULT_CONFIG.show_init_message
-			)
-		ConfigSetting.INCLUDE_SCRIPT_FILE_EXTENSION:
-			output = (
-				ProjectSettings
-				. get_setting(
-					"glog/config/general/include_script_file_extension",
-					DEFAULT_CONFIG.include_script_file_extension,
-				)
-			)
-		ConfigSetting.INCLUDE_LINE_NUMBER:
-			output = (
-				ProjectSettings
-				. get_setting(
-					"glog/config/general/include_line_number",
-					DEFAULT_CONFIG.include_line_number,
-				)
-			)
-		ConfigSetting.INCLUDE_DEBUG_TRACEBACK:
-			output = (
-				ProjectSettings
-				. get_setting(
-					"glog/config/general/include_debug_traceback",
-					DEFAULT_CONFIG.include_debug_traceback,
-				)
-			)
-		ConfigSetting.INCLUDE_TIMESTAMP:
-			output = ProjectSettings.get_setting(
-				"glog/config/general/include_timestamp", DEFAULT_CONFIG.include_timestamp
-			)
+		ConfigSetting.DATE_SEPARATOR, ConfigSetting.INCLUDE_DATE, ConfigSetting.INCLUDE_TIME:
+			setting_category = "timestamps"
 
-		# Timestamps
-		ConfigSetting.DATE_SEPARATOR:
-			output = ProjectSettings.get_setting(
-				"glog/config/timestamps/date_separator", DEFAULT_CONFIG.date_separator
-			)
-		ConfigSetting.INCLUDE_DATE:
-			output = ProjectSettings.get_setting(
-				"glog/config/timestamps/include_date", DEFAULT_CONFIG.include_date
-			)
-		ConfigSetting.INCLUDE_TIME:
-			output = ProjectSettings.get_setting(
-				"glog/config/timestamps/include_time", DEFAULT_CONFIG.include_time
-			)
+		ConfigSetting.DEBUG_COLOR, ConfigSetting.INFO_COLOR, ConfigSetting.WARN_COLOR:
+			setting_category = "colors"
 
-		# Colors
-		ConfigSetting.DEBUG_COLOR:
-			output = ProjectSettings.get_setting(
-				"glog/config/colors/debug_color", DEFAULT_CONFIG.debug_color
-			)
-		ConfigSetting.INFO_COLOR:
-			output = ProjectSettings.get_setting(
-				"glog/config/colors/info_color", DEFAULT_CONFIG.info_color
-			)
-		ConfigSetting.WARN_COLOR:
-			output = ProjectSettings.get_setting(
-				"glog/config/colors/warn_color", DEFAULT_CONFIG.warn_color
-			)
+		_:
+			setting_category = "general"
+
+	var setting_path := "glog/config/%s/%s" % [setting_category, key_name]
+	output = ProjectSettings.get_setting(setting_path, DEFAULT_CONFIG[key_name])
 
 	return output
 
