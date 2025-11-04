@@ -19,7 +19,7 @@ enum LogLevel {
 
 # TODO: More settings
 # include_script_filename, include_line_number_in_category,
-# include_debug_traceback, show_debug_messages_in_release, iso_timestamps, and default colors
+# show_debug_messages_in_release, iso_timestamps
 
 ## The potential settings to be called with [method Glog._get_glog_config_setting]
 enum ConfigSetting {
@@ -34,7 +34,7 @@ enum ConfigSetting {
 	INCLUDE_DEBUG_TRACEBACK,
 	DEBUG_COLOR,
 	INFO_COLOR,
-	WARN_COLOR,
+	WARNING_COLOR,
 }
 
 ## Name used for log statements internally made by Glog.
@@ -54,7 +54,7 @@ const DEFAULT_CONFIG := {
 	include_debug_traceback = true,
 	debug_color = "#70BAFA",
 	info_color = "#478CBF",
-	warn_color = "#FFDE66"
+	warning_color = "#FFDE66"
 }
 
 ########## LOGGING ##########
@@ -196,19 +196,26 @@ func _get_output_string(
 	return output
 
 
-func _check_color(color: String, level: LogLevel) -> String:
+func _check_color(color: String, level := LogLevel.INFO) -> String:
 	var printed_color := ""
 	var log_color := ""
 
 	match level:
 		LogLevel.DEBUG:
-			log_color = DEFAULT_CONFIG.debug_color
+			var config_color: Color = _get_glog_config_setting(ConfigSetting.DEBUG_COLOR)
+			log_color = config_color.to_html()
+
 		LogLevel.INFO:
-			log_color = DEFAULT_CONFIG.info_color
+			var config_color: Color = _get_glog_config_setting(ConfigSetting.INFO_COLOR)
+			log_color = config_color.to_html()
+
 		LogLevel.WARN:
-			log_color = DEFAULT_CONFIG.warn_color
+			var config_color: Color = _get_glog_config_setting(ConfigSetting.WARNING_COLOR)
+			log_color = config_color.to_html()
+
 		_:
-			log_color = DEFAULT_CONFIG.info_color
+			var config_color: Color = _get_glog_config_setting(ConfigSetting.INFO_COLOR)
+			log_color = config_color.to_html()
 
 	if color == "":
 		printed_color = log_color
@@ -321,7 +328,7 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 		ConfigSetting.DATE_SEPARATOR, ConfigSetting.INCLUDE_DATE, ConfigSetting.INCLUDE_TIME:
 			setting_category = "timestamps"
 
-		ConfigSetting.DEBUG_COLOR, ConfigSetting.INFO_COLOR, ConfigSetting.WARN_COLOR:
+		ConfigSetting.DEBUG_COLOR, ConfigSetting.INFO_COLOR, ConfigSetting.WARNING_COLOR:
 			setting_category = "colors"
 
 		_:
@@ -358,7 +365,7 @@ static func _add_color_setting(name: String, default_value: String) -> void:
 		ProjectSettings.set_setting(setting_path, default_value)
 
 	ProjectSettings.add_property_info({"name": setting_path, "type": TYPE_COLOR})
-	ProjectSettings.set_initial_value(setting_path, default_value)
+	ProjectSettings.set_initial_value(setting_path, Color.html(default_value))
 	ProjectSettings.set_as_basic(setting_path, true)
 
 
@@ -406,7 +413,7 @@ static func _add_settings() -> void:
 	# Colors
 	_add_color_setting("debug_color", DEFAULT_CONFIG.debug_color)
 	_add_color_setting("info_color", DEFAULT_CONFIG.info_color)
-	_add_color_setting("warning_color", DEFAULT_CONFIG.warn_color)
+	_add_color_setting("warning_color", DEFAULT_CONFIG.warning_color)
 
 
 ########## PUBLIC API ##########
