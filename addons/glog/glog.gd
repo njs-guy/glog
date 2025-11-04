@@ -49,7 +49,7 @@ const DEFAULT_CONFIG := {
 	date_separator = ".",
 	include_date = true,
 	include_time = true,
-	include_script_file_extension = true,
+	include_script_file_extension = false,
 	include_line_number = true,
 	include_debug_traceback = true,
 	debug_color = "#70BAFA",
@@ -146,7 +146,12 @@ func _get_timestamp() -> String:
 	return output
 
 
-func _get_script_caller(include_file_ext := false, include_line_number := true) -> String:
+func _get_script_caller() -> String:
+	var include_file_ext: bool = _get_glog_config_setting(
+		ConfigSetting.INCLUDE_SCRIPT_FILE_EXTENSION
+	)
+	var include_line_number: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_LINE_NUMBER)
+
 	# Gets the most recent call in the current stack.
 	# Basically, the filename of the script that called Glog.whatever()
 	var stack: Dictionary = get_stack().back()
