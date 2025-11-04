@@ -257,7 +257,9 @@ func _log_message(
 					printed_color,
 				)
 			)
-			_log_traceback()
+
+			if _get_glog_config_setting(ConfigSetting.INCLUDE_DEBUG_TRACEBACK):
+				_log_traceback()
 
 		LogLevel.INFO:
 			print_rich(
@@ -358,9 +360,6 @@ static func _add_color_setting(name: String, default_value: String) -> void:
 	ProjectSettings.add_property_info({"name": setting_path, "type": TYPE_COLOR})
 	ProjectSettings.set_initial_value(setting_path, default_value)
 	ProjectSettings.set_as_basic(setting_path, true)
-
-
-# TODO: add descriptions
 
 
 static func _add_settings() -> void:
