@@ -5,7 +5,7 @@ extends Node
 
 ## The logging level.
 enum LogLevel {
-	## Only used for debugging. Hidden by default.
+	## Only used for debugging. Not available in release builds.
 	DEBUG,
 	## Normal level. Same as a normal [code]print()[/code].
 	INFO,
@@ -17,7 +17,7 @@ enum LogLevel {
 	NONE,
 }
 
-# TODO: iso_timestamps
+# TODO: iso_timestamps, setting to disable colors
 
 ## The potential settings to be called with [method Glog._get_glog_config_setting]
 enum ConfigSetting {
@@ -27,7 +27,6 @@ enum ConfigSetting {
 	DATE_SEPARATOR,
 	INCLUDE_DATE,
 	INCLUDE_TIME,
-	INCLUDE_SCRIPT_FILE_EXTENSION,
 	INCLUDE_LINE_NUMBER,
 	INCLUDE_DEBUG_TRACEBACK,
 	DEBUG_COLOR,
@@ -47,7 +46,6 @@ const DEFAULT_CONFIG := {
 	date_separator = ".",
 	include_date = true,
 	include_time = true,
-	include_script_file_extension = false,
 	include_line_number = true,
 	include_debug_traceback = true,
 	debug_color = "#70BAFA",
@@ -144,32 +142,8 @@ func _get_timestamp() -> String:
 	return output
 
 
-func _get_script_caller() -> String:
-	if not OS.has_feature("debug"):
-		return ""
-
-	var include_file_ext: bool = _get_glog_config_setting(
-		ConfigSetting.INCLUDE_SCRIPT_FILE_EXTENSION
-	)
-	var include_line_number: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_LINE_NUMBER)
-
-	# Gets the most recent call in the current stack.
-	# Basically, the filename of the script that called Glog.whatever()
-	var stack: Dictionary = get_stack().back()
-	var source_file: String = stack["source"].get_file()
-
-	var line_number := ""
-
-	if include_line_number:
-		line_number = ":" + str(get_stack().back()["line"])
-
-	if include_file_ext:
-		return "%s%s" % [source_file, line_number]
-
-	return "%s%s" % [source_file.get_basename(), line_number]
-
-
 func _get_traceback() -> String:
+	# Don't use get_stack() so that release builds don't crash.
 	if not OS.has_feature("debug"):
 		return ""
 
@@ -251,13 +225,6 @@ func _log_message(
 		if include_date or include_time:
 			timestamp = "[%s]" % _get_timestamp()
 
-	var output_category := ""
-
-	if category == "":
-		output_category = _get_script_caller()
-	else:
-		output_category = category
-
 	var printed_color := _check_color(color, level)
 
 	match level:
@@ -266,7 +233,7 @@ func _log_message(
 				_get_output_string(
 					timestamp,
 					level,
-					output_category,
+					category,
 					message,
 					true,
 					false,
@@ -282,7 +249,7 @@ func _log_message(
 				_get_output_string(
 					timestamp,
 					level,
-					output_category,
+					category,
 					message,
 					true,
 					false,
@@ -296,7 +263,7 @@ func _log_message(
 				_get_output_string(
 					timestamp,
 					level,
-					output_category,
+					category,
 					message,
 					true,
 					true,
@@ -309,7 +276,7 @@ func _log_message(
 				_get_output_string(
 					timestamp,
 					level,
-					output_category,
+					category,
 					message,
 				)
 			)
@@ -400,7 +367,6 @@ static func _add_settings() -> void:
 	ProjectSettings.set_as_basic(LOG_LEVEL_PATH, true)
 
 	_add_bool_setting("show_init_message", DEFAULT_CONFIG.show_init_message)
-	_add_bool_setting("include_script_file_extension", DEFAULT_CONFIG.include_script_file_extension)
 	_add_bool_setting("include_line_number", DEFAULT_CONFIG.include_line_number)
 	_add_bool_setting("include_debug_traceback", DEFAULT_CONFIG.include_debug_traceback)
 	_add_bool_setting("include_timestamp", DEFAULT_CONFIG.include_timestamp)
@@ -419,6 +385,8 @@ static func _add_settings() -> void:
 	_add_bool_setting("include_date", DEFAULT_CONFIG.include_date, true)
 	_add_bool_setting("include_time", DEFAULT_CONFIG.include_time, true)
 
+	# BUG: Proj settings don't always realize when colors are still default
+
 	# Colors
 	_add_color_setting("debug_color", DEFAULT_CONFIG.debug_color)
 	_add_color_setting("info_color", DEFAULT_CONFIG.info_color)
@@ -427,11 +395,9 @@ static func _add_settings() -> void:
 
 ########## PUBLIC API ##########
 
-# BUG: Default category is blank in release builds
-
 
 ## Logs a message containing debug information.
-## [br]Disabled in release builds by default.
+## [br]Disabled in release builds.
 func debug(category: String, message: String, color := "") -> void:
 	if _check_log_level(LogLevel.DEBUG):
 		if OS.has_feature("debug"):
