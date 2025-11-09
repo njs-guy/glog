@@ -17,9 +17,7 @@ enum LogLevel {
 	NONE,
 }
 
-# TODO: More settings
-# include_script_filename, include_line_number_in_category,
-# show_debug_messages_in_release, iso_timestamps
+# TODO: iso_timestamps
 
 ## The potential settings to be called with [method Glog._get_glog_config_setting]
 enum ConfigSetting {
@@ -147,6 +145,9 @@ func _get_timestamp() -> String:
 
 
 func _get_script_caller() -> String:
+	if not OS.has_feature("debug"):
+		return ""
+
 	var include_file_ext: bool = _get_glog_config_setting(
 		ConfigSetting.INCLUDE_SCRIPT_FILE_EXTENSION
 	)
@@ -169,6 +170,9 @@ func _get_script_caller() -> String:
 
 
 func _get_traceback() -> String:
+	if not OS.has_feature("debug"):
+		return ""
+
 	var stack: Dictionary = get_stack().back()
 
 	return "%s:%s:%s()" % [stack["source"], stack["line"], stack["function"]]
@@ -422,6 +426,8 @@ static func _add_settings() -> void:
 
 
 ########## PUBLIC API ##########
+
+# BUG: Default category is blank in release builds
 
 
 ## Logs a message containing debug information.
