@@ -334,14 +334,14 @@ static func _add_bool_setting(
 	ProjectSettings.set_as_basic(setting_path, true)
 
 
-static func _add_color_setting(name: String, default_value: String) -> void:
+static func _add_color_setting(name: String, default_value: Color) -> void:
 	var setting_path = "glog/config/colors/%s" % name
 
 	if not ProjectSettings.has_setting(setting_path):
 		ProjectSettings.set_setting(setting_path, default_value)
 
 	ProjectSettings.add_property_info({"name": setting_path, "type": TYPE_COLOR})
-	ProjectSettings.set_initial_value(setting_path, Color.html(default_value))
+	ProjectSettings.set_initial_value(setting_path, default_value)
 	ProjectSettings.set_as_basic(setting_path, true)
 
 
@@ -385,12 +385,13 @@ static func _add_settings() -> void:
 	_add_bool_setting("include_date", DEFAULT_CONFIG.include_date, true)
 	_add_bool_setting("include_time", DEFAULT_CONFIG.include_time, true)
 
-	# BUG: Proj settings don't always realize when colors are still default
-
 	# Colors
-	_add_color_setting("debug_color", DEFAULT_CONFIG.debug_color)
-	_add_color_setting("info_color", DEFAULT_CONFIG.info_color)
-	_add_color_setting("warning_color", DEFAULT_CONFIG.warning_color)
+
+	# BUG: Changing color or timestamp settings makes the section go to the top
+
+	_add_color_setting("debug_color", Color.html(DEFAULT_CONFIG.debug_color))
+	_add_color_setting("info_color", Color.html(DEFAULT_CONFIG.info_color))
+	_add_color_setting("warning_color", Color.html(DEFAULT_CONFIG.warning_color))
 
 
 ########## PUBLIC API ##########
