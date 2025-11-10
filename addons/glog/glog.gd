@@ -165,7 +165,7 @@ func _get_output_string(
 	category: String,
 	message: String,
 	color_message := false,
-	color := "",
+	color := Color.TRANSPARENT,
 ) -> String:
 	var print_color := false
 	var show_colors_level: ShowColorsLevel = _get_glog_config_setting(ConfigSetting.SHOW_COLORS)
@@ -188,10 +188,10 @@ func _get_output_string(
 	if print_color:
 		if color_message:
 			# Print color, print colored message
-			output = "[color=%s]%s %s" % [color, meta, message]
+			output = "[color=%s]%s %s" % [color.to_html(), meta, message]
 		else:
 			# Print color, message has no color
-			output = "[color=%s]%s[/color] %s" % [color, meta, message]
+			output = "[color=%s]%s[/color] %s" % [color.to_html(), meta, message]
 	else:
 		# No color
 		output = "%s %s" % [meta, message]
@@ -199,28 +199,28 @@ func _get_output_string(
 	return output
 
 
-func _check_color(color: String, level := LogLevel.INFO) -> String:
-	var printed_color := ""
-	var log_color := ""
+func _check_color(color: Color, level := LogLevel.INFO) -> Color:
+	var printed_color: Color
+	var log_color: Color
 
 	match level:
 		LogLevel.DEBUG:
 			var config_color: Color = _get_glog_config_setting(ConfigSetting.DEBUG_COLOR)
-			log_color = config_color.to_html()
+			log_color = config_color
 
 		LogLevel.INFO:
 			var config_color: Color = _get_glog_config_setting(ConfigSetting.INFO_COLOR)
-			log_color = config_color.to_html()
+			log_color = config_color
 
 		LogLevel.WARN:
 			var config_color: Color = _get_glog_config_setting(ConfigSetting.WARNING_COLOR)
-			log_color = config_color.to_html()
+			log_color = config_color
 
 		_:
 			var config_color: Color = _get_glog_config_setting(ConfigSetting.INFO_COLOR)
-			log_color = config_color.to_html()
+			log_color = config_color
 
-	if color == "":
+	if color == Color.TRANSPARENT:
 		printed_color = log_color
 	else:
 		printed_color = color
@@ -233,7 +233,7 @@ func _log_message(
 	category: String,
 	message: String,
 	level := LogLevel.INFO,
-	color := "",
+	color := Color.TRANSPARENT,
 ) -> void:
 	var include_timestamp: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIMESTAMP)
 	var include_date: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_DATE)
@@ -435,14 +435,14 @@ static func _add_settings() -> void:
 
 ## Logs a message containing debug information.
 ## [br]Disabled in release builds.
-func debug(category: String, message: String, color := "") -> void:
+func debug(category: String, message: String, color := Color.TRANSPARENT) -> void:
 	if _check_log_level(LogLevel.DEBUG):
 		if OS.has_feature("debug"):
 			_log_message(category, message, LogLevel.DEBUG, color)
 
 
 ## Logs a standard message to the console.
-func info(category: String, message: String, color := "") -> void:
+func info(category: String, message: String, color := Color.TRANSPARENT) -> void:
 	if _check_log_level(LogLevel.INFO):
 		_log_message(category, message, LogLevel.INFO, color)
 
@@ -453,7 +453,7 @@ func info(category: String, message: String, color := "") -> void:
 ## [br]For proper warning tracebacks,
 ## follow this call with a [method @GlobalScope.push_warning]
 ## with the same message.
-func warn(category: String, message: String, color := "") -> void:
+func warn(category: String, message: String, color := Color.TRANSPARENT) -> void:
 	if _check_log_level(LogLevel.WARN):
 		_log_message(category, message, LogLevel.WARN, color)
 
