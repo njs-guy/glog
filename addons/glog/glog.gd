@@ -54,7 +54,7 @@ const DEFAULT_CONFIG := {
 	include_time = true,
 	include_line_number = true,
 	include_debug_traceback = true,
-	show_colors_level = ShowColorsLevel.ALL,
+	show_colors = ShowColorsLevel.ALL,
 	debug_color = "#70BAFA",
 	info_color = "#478CBF",
 	warning_color = "#FFDE66"
@@ -164,10 +164,23 @@ func _get_output_string(
 	log_level: LogLevel,
 	category: String,
 	message: String,
-	print_color := false,
 	color_message := false,
 	color := "",
 ) -> String:
+	var print_color := false
+	var show_colors_level: ShowColorsLevel = _get_glog_config_setting(ConfigSetting.SHOW_COLORS)
+
+	# Determine if colors should be printed
+	if !log_level == LogLevel.ERROR:
+		# If this is not an error message
+		if !show_colors_level == ShowColorsLevel.ALL:
+			# If show_colors is not set to All
+			if show_colors_level == ShowColorsLevel.ONLY_WARNINGS and log_level == LogLevel.WARN:
+				# If warnings are allowed and this message is a warning
+				print_color = true
+		else:
+			print_color = true
+
 	var meta := "%s[%s][%s]" % [timestamp, _get_log_level_key(log_level), category]
 
 	var output := ""
@@ -242,7 +255,6 @@ func _log_message(
 					level,
 					category,
 					message,
-					true,
 					false,
 					printed_color,
 				)
@@ -258,7 +270,6 @@ func _log_message(
 					level,
 					category,
 					message,
-					true,
 					false,
 					printed_color,
 				)
@@ -272,7 +283,6 @@ func _log_message(
 					level,
 					category,
 					message,
-					true,
 					true,
 					printed_color,
 				)
@@ -311,6 +321,9 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 		ConfigSetting.DATE_SEPARATOR, ConfigSetting.INCLUDE_DATE, ConfigSetting.INCLUDE_TIME:
 			setting_category = "timestamps"
 
+		# This repeat is just to reduce the line length
+		ConfigSetting.SHOW_COLORS:
+			setting_category = "colors"
 		ConfigSetting.DEBUG_COLOR, ConfigSetting.INFO_COLOR, ConfigSetting.WARNING_COLOR:
 			setting_category = "colors"
 
@@ -403,7 +416,7 @@ static func _add_settings() -> void:
 	_add_bool_setting("include_date", DEFAULT_CONFIG.include_date, true)
 	_add_bool_setting("include_time", DEFAULT_CONFIG.include_time, true)
 
-	# Colors
+	# colors
 
 	# BUG: Changing color or timestamp settings makes the section go to the top
 
