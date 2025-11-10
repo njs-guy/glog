@@ -1,8 +1,6 @@
 ## A simple logger for Godot 4.
 extends Node
 
-# BUG: Stack traces lead back to this file instead of where the func was called.
-
 ## The logging level.
 enum LogLevel {
 	## Only used for debugging. Not available in release builds.
@@ -14,6 +12,13 @@ enum LogLevel {
 	## Error. Same as a normal [code]printerr()[/code].
 	ERROR,
 	## Hides everything.
+	NONE,
+}
+
+## What colors to show in the logger.
+enum ShowColorsLevel {
+	ALL,
+	ONLY_WARNINGS,
 	NONE,
 }
 
@@ -29,6 +34,7 @@ enum ConfigSetting {
 	INCLUDE_TIME,
 	INCLUDE_LINE_NUMBER,
 	INCLUDE_DEBUG_TRACEBACK,
+	SHOW_COLORS,
 	DEBUG_COLOR,
 	INFO_COLOR,
 	WARNING_COLOR,
@@ -48,6 +54,7 @@ const DEFAULT_CONFIG := {
 	include_time = true,
 	include_line_number = true,
 	include_debug_traceback = true,
+	show_colors_level = ShowColorsLevel.ALL,
 	debug_color = "#70BAFA",
 	info_color = "#478CBF",
 	warning_color = "#FFDE66"
@@ -345,27 +352,38 @@ static func _add_color_setting(name: String, default_value: Color) -> void:
 	ProjectSettings.set_as_basic(setting_path, true)
 
 
+static func _add_enum_setting(path: String, hint_string: String, default_value: Variant):
+	if not ProjectSettings.has_setting(path):
+		ProjectSettings.set_setting(path, default_value)
+
+	(
+		ProjectSettings
+		. add_property_info(
+			{
+				"name": path,
+				"type": TYPE_INT,
+				"hint": PROPERTY_HINT_ENUM,
+				"hint_string": hint_string,
+			}
+		)
+	)
+
+	ProjectSettings.set_initial_value(path, default_value)
+	ProjectSettings.set_as_basic(path, true)
+
+
 static func _add_settings() -> void:
 	const LOG_LEVEL_PATH := "glog/config/general/log_level"
 	const DATE_SEPARATOR_PATH := "glog/config/timestamps/date_separator"
+	const SHOW_COLORS_PATH := "glog/config/colors/show_colors"
 
 	# general
 
-	# log_level
-	if not ProjectSettings.has_setting(LOG_LEVEL_PATH):
-		ProjectSettings.set_setting(LOG_LEVEL_PATH, DEFAULT_CONFIG.log_level)
-
-	ProjectSettings.add_property_info(
-		{
-			"name": LOG_LEVEL_PATH,
-			"type": TYPE_INT,
-			"hint": PROPERTY_HINT_ENUM,
-			"hint_string": "Debug,Info,Warning,Error,None"
-		}
+	_add_enum_setting(
+		LOG_LEVEL_PATH,
+		"Debug,Info,Warning,Error,None",
+		DEFAULT_CONFIG.log_level,
 	)
-	ProjectSettings.set_initial_value(LOG_LEVEL_PATH, DEFAULT_CONFIG.log_level)
-	ProjectSettings.set_as_basic(LOG_LEVEL_PATH, true)
-
 	_add_bool_setting("show_init_message", DEFAULT_CONFIG.show_init_message)
 	_add_bool_setting("include_line_number", DEFAULT_CONFIG.include_line_number)
 	_add_bool_setting("include_debug_traceback", DEFAULT_CONFIG.include_debug_traceback)
@@ -389,6 +407,11 @@ static func _add_settings() -> void:
 
 	# BUG: Changing color or timestamp settings makes the section go to the top
 
+	_add_enum_setting(
+		SHOW_COLORS_PATH,
+		"All,Warnings only,None",
+		DEFAULT_CONFIG.show_colors_level,
+	)
 	_add_color_setting("debug_color", Color.html(DEFAULT_CONFIG.debug_color))
 	_add_color_setting("info_color", Color.html(DEFAULT_CONFIG.info_color))
 	_add_color_setting("warning_color", Color.html(DEFAULT_CONFIG.warning_color))
