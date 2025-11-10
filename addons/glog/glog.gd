@@ -22,7 +22,7 @@ enum ShowColorsLevel {
 	NONE,
 }
 
-# TODO: iso_timestamps, setting to disable colors
+# TODO: iso_timestamps
 
 ## The potential settings to be called with [method Glog._get_glog_config_setting]
 enum ConfigSetting {
@@ -423,7 +423,7 @@ static func _add_settings() -> void:
 	_add_enum_setting(
 		SHOW_COLORS_PATH,
 		"All,Warnings only,None",
-		DEFAULT_CONFIG.show_colors_level,
+		DEFAULT_CONFIG.show_colors,
 	)
 	_add_color_setting("debug_color", Color.html(DEFAULT_CONFIG.debug_color))
 	_add_color_setting("info_color", Color.html(DEFAULT_CONFIG.info_color))
