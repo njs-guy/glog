@@ -22,8 +22,6 @@ enum ShowColorsLevel {
 	NONE,
 }
 
-# TODO: iso_timestamps
-
 ## The potential settings to be called with [method Glog._get_glog_config_setting]
 enum ConfigSetting {
 	LOG_LEVEL,
@@ -32,7 +30,6 @@ enum ConfigSetting {
 	DATE_SEPARATOR,
 	INCLUDE_DATE,
 	INCLUDE_TIME,
-	INCLUDE_LINE_NUMBER,
 	INCLUDE_DEBUG_TRACEBACK,
 	SHOW_COLORS,
 	DEBUG_COLOR,
@@ -52,7 +49,6 @@ const DEFAULT_CONFIG := {
 	date_separator = ".",
 	include_date = true,
 	include_time = true,
-	include_line_number = true,
 	include_debug_traceback = true,
 	show_colors = ShowColorsLevel.ALL,
 	debug_color = "#70BAFA",
@@ -398,7 +394,6 @@ static func _add_settings() -> void:
 		DEFAULT_CONFIG.log_level,
 	)
 	_add_bool_setting("show_init_message", DEFAULT_CONFIG.show_init_message)
-	_add_bool_setting("include_line_number", DEFAULT_CONFIG.include_line_number)
 	_add_bool_setting("include_debug_traceback", DEFAULT_CONFIG.include_debug_traceback)
 	_add_bool_setting("include_timestamp", DEFAULT_CONFIG.include_timestamp)
 
