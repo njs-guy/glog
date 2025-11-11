@@ -42,6 +42,7 @@ Glog.error("player", "Could not find PlayerController.")
 Which will give the following output:
 ```
 [2025.10.21 14:51:29][DEBUG][rng] Rolled 50
+	--> res://test_scene.gd:12:_ready()
 [2025.10.21 14:51:29][INFO][shop] Player bought Holy Grail for 100G.
 [2025.10.21 14:51:29][WARN][flags] Grandma is about to explode.
 [2025.10.21 14:51:29][ERROR][player] Could not find PlayerController.
