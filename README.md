@@ -1,6 +1,6 @@
 # Glog
 
-A simple logger for [Godot Engine 4](https://godotengine.org/).
+A simple GDScript logger for [Godot Engine 4](https://godotengine.org/).
 
 ## Installation
 
@@ -18,13 +18,15 @@ A simple logger for [Godot Engine 4](https://godotengine.org/).
 TL;DR `Godot 4.1.4`
 
 Glog should work with Godot 4.1.4 or newer out of the box,
-but you may get a few warnings about invalid UID's.
+but in older versions, you may get a warning about an invalid UID.
 This warning can be safely ignored
 as long as the addon is working as expected.
 
-Glog will work on 4.0.4 if you disable a few lines in `addons/glog/glog_plugin.gd`
+Glog will work on 4.0.4 if you disable a few lines in `addons/glog/glog.gd`
 that set the config settings as a basic setting.
 After that, you'll need to enable advanced settings to change the config.
+
+So while you *can* use Glog in Godot 4.0.4, it's not recommended.
 
 ## Usage
 
@@ -47,7 +49,29 @@ Which will give the following output:
 
 The first argument is for the log category or scope, and the second is for the message itself.
 
-That's pretty much it. Note that debug messages are disabled by default.
+The tags at the beginning of the message will be colored in the Godot output panel.
+Their colors can be changed in the project settings, or on a per-message basis like this.
+```gdscript
+Glog.info("player_state", "The player died.", "#ef4444")
+```
+This argument accepts any [Color](https://docs.godotengine.org/en/stable/classes/class_color.html)
+that Godot accepts.
+
+C# support is limited, clunky and error prone. While it does work for the most part,
+Glog was made with GDScript in mind.
+It can be accessed like any other GDScript singleton. For example:
+```cs
+// C#
+
+var glog = GetNode<Node>("/root/Glog");
+
+glog.Call("debug", "rng", "Rolled 50");
+glog.Call("info", "shop", "Player bought Holy Grail for 100G.", "#ef4444");
+glog.Call("warn", "flags", "Grandma is about to explode.");
+glog.Call("error", "player", "Could not find PlayerController.");
+```
+
+That's pretty much it.
 
 ## Config
 
