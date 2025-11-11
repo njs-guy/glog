@@ -333,7 +333,9 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 
 
 static func _add_bool_setting(
-	name: String, default_value: bool, is_timestamp_setting := false
+	name: String,
+	default_value: bool,
+	is_timestamp_setting := false,
 ) -> void:
 	var setting_path := ""
 
@@ -350,7 +352,10 @@ static func _add_bool_setting(
 	ProjectSettings.set_as_basic(setting_path, true)
 
 
-static func _add_color_setting(name: String, default_value: Color) -> void:
+static func _add_color_setting(
+	name: String,
+	default_value: Color,
+) -> void:
 	var setting_path = "glog/config/colors/%s" % name
 
 	if not ProjectSettings.has_setting(setting_path):
@@ -361,7 +366,11 @@ static func _add_color_setting(name: String, default_value: Color) -> void:
 	ProjectSettings.set_as_basic(setting_path, true)
 
 
-static func _add_enum_setting(path: String, hint_string: String, default_value: Variant):
+static func _add_enum_setting(
+	path: String,
+	hint_string: String,
+	default_value: Variant,
+):
 	if not ProjectSettings.has_setting(path):
 		ProjectSettings.set_setting(path, default_value)
 
