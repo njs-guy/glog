@@ -77,15 +77,16 @@ That's pretty much it.
 
 Go to `Project -> Project Settings...` and scroll all the way down to `Glog/Config`.
 
-The default settings should be fine for most use cases, but you may
-want to change the Log Level to Debug to output more debugging information.
-How you set up what's logged is up to you.
+The default settings should be fine for most use cases.
+What information you decide to log is up to you.
 
 ### General
 
-- Log Level: The lowest logging level to write to output. Defaults to Info.
+- Log Level: The lowest logging level to write to output. Defaults to Debug.
+Debug messages are hidden in release builds.
 - Show Init Message: Whether to show the `glog loaded successfully` message at startup.
 Defaults to true.
+- Include Debug Traceback - Whether to show function traceback for debug messages. Defaults to true.
 - Include Timestamp: Whether to print a timestamp for each log. Defaults to true.
 
 ### Timestamps
@@ -93,6 +94,13 @@ Defaults to true.
 - Date Separator: What character to use to separate date numbers. Defaults to ".".
 - Include Date: Whether to include a date in the timestamp. Defaults to true.
 - Include Time: Whether to include the time in the timestamp. Defaults to true.
+
+### Colors
+
+- Show Colors: Which messages should display colors. Defaults to All.
+- Debug Color: The color  for debug messages. Defaults to #70BAFA.
+- Info Color: The color  for info messages. Defaults to #478CBF.
+- Warning Color: The color  for warning messages. Defaults to #FFDE66.
 
 ## Writing output to file
 
@@ -124,6 +132,13 @@ with a `push_warning()` or `push_error()` with the same message
 so that Godot's debugger can properly show you where the warning or error was.
 
 If anyone knows a workaround or fix, please let me know because it's driving me crazy.
+
+### Limited C# support
+
+Glog was written for GDScript. While you can still call the singleton from C#,
+it's messy and error-prone. Debug traceback is also broken in C# and traces back to `glog.gd` because of language differences.
+
+If your codebase has a lot of C#, Glog may not be for you.
 
 
 ## Building
