@@ -184,7 +184,7 @@ func _get_output_string(
 	if print_color:
 		if color_message:
 			# Print color, print colored message
-			output = "[color=%s]%s %s" % [color.to_html(), meta, message]
+			output = "[color=%s]%s %s[/color]" % [color.to_html(), meta, message]
 		else:
 			# Print color, message has no color
 			output = "[color=%s]%s[/color] %s" % [color.to_html(), meta, message]
