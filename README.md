@@ -40,13 +40,8 @@ Glog.error("player", "Could not find PlayerController.")
 ```
 
 Which will give the following output:
-```
-[2025.10.21 14:51:29][DEBUG][rng] Rolled 50
-	--> res://test_scene.gd:12:_ready()
-[2025.10.21 14:51:29][INFO][shop] Player bought Holy Grail for 100G.
-[2025.10.21 14:51:29][WARN][flags] Grandma is about to explode.
-[2025.10.21 14:51:29][ERROR][player] Could not find PlayerController.
-```
+
+![Output screenshot](assets/output_screenshot.png "Output screenshot")
 
 The first argument is for the log category or scope, and the second is for the message itself.
 
@@ -72,20 +67,19 @@ glog.Call("warn", "flags", "Grandma is about to explode.");
 glog.Call("error", "player", "Could not find PlayerController.");
 ```
 
-That's pretty much it.
+That's pretty much it. What information you decide to log is up to you.
 
 ## Config
 
 Go to `Project -> Project Settings...` and scroll all the way down to `Glog/Config`.
 
 The default settings should be fine for most use cases.
-What information you decide to log is up to you.
 
 ### General
 
 - Log Level: The lowest logging level to write to output. Defaults to Debug.
 Debug messages are hidden in release builds.
-- Show Init Message: Whether to show the `glog loaded successfully` message at startup.
+- Show Init Message: Whether to show the "glog loaded successfully" message at startup.
 Defaults to true.
 - Include Debug Traceback - Whether to show function traceback for debug messages. Defaults to true.
 - Include Timestamp: Whether to print a timestamp for each log. Defaults to true.
@@ -117,22 +111,17 @@ Anything output to Godot's console will be written here.
 
 Godot doesn't currently have any way to print a warning to the console through gdscript,
 so all warnings sent by Glog are a yellow-colored `rich_print()`.
-
 The warning is still labeled as a warning in the text output,
 but you can't filter out the warnings like you can with the rest of the output.
 
 This will remain an issue until Godot officially supports some kind of `printwarn()`.
 
-### Bad tracebacks
+### Debugging panel
 
-Currently, any traceback logs will show the filepath to the Glog addon
-instead of where `Glog.debug()` was called.
-
+As far as I know, you can't change the traceback for `push_warning()` or `push_error()`.
 For this reason, it's recommended to follow any `Glog.warn()` or `Glog.error()`
 with a `push_warning()` or `push_error()` with the same message
 so that Godot's debugger can properly show you where the warning or error was.
-
-If anyone knows a workaround or fix, please let me know because it's driving me crazy.
 
 ### Limited C# support
 
