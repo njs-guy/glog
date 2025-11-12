@@ -439,14 +439,22 @@ static func _add_settings() -> void:
 
 ## Logs a message containing debug information.
 ## [br]Disabled in release builds.
-func debug(category: String, message: String, color := Color.TRANSPARENT) -> void:
-	if _check_log_level(LogLevel.DEBUG):
-		if OS.has_feature("debug"):
+func debug(
+	category: String,
+	message: String,
+	color := Color.TRANSPARENT,
+) -> void:
+	if OS.has_feature("debug"):
+		if _check_log_level(LogLevel.DEBUG):
 			_log_message(category, message, LogLevel.DEBUG, color)
 
 
 ## Logs a standard message to the console.
-func info(category: String, message: String, color := Color.TRANSPARENT) -> void:
+func info(
+	category: String,
+	message: String,
+	color := Color.TRANSPARENT,
+) -> void:
 	if _check_log_level(LogLevel.INFO):
 		_log_message(category, message, LogLevel.INFO, color)
 
@@ -457,7 +465,11 @@ func info(category: String, message: String, color := Color.TRANSPARENT) -> void
 ## [br]For proper warning tracebacks,
 ## follow this call with a [method @GlobalScope.push_warning]
 ## with the same message.
-func warn(category: String, message: String, color := Color.TRANSPARENT) -> void:
+func warn(
+	category: String,
+	message: String,
+	color := Color.TRANSPARENT,
+) -> void:
 	if _check_log_level(LogLevel.WARN):
 		_log_message(category, message, LogLevel.WARN, color)
 
