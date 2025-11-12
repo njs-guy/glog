@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.1.0 (2025/11/12)
+
+### New features
+
+- Info and Debug messages have colored timestamps, log levels, and categories. The messages are still the default output color.
+- Output color can be changed in the settings, or on a per-message basis.
+
+### Fixes and improvements
+
+- The default Log Level is now Debug.
+- Debug messages now have proper tracebacks.
+- Tons of internal refactoring.
+
 ## v1.0.1 (2025/10/22)
 
 - No longer logs debug messages when debugging isn't available.
