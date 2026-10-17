@@ -350,13 +350,15 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 	var setting_category := ""
 
 	match key:
-		ConfigSetting.DATE_SEPARATOR, ConfigSetting.INCLUDE_DATE, ConfigSetting.INCLUDE_TIME:
+		ConfigSetting.DATE_SEPARATOR, \
+				ConfigSetting.INCLUDE_DATE, \
+				ConfigSetting.INCLUDE_TIME:
 			setting_category = "timestamps"
 
-		# This repeat is just to reduce the line length
-		ConfigSetting.SHOW_COLORS:
-			setting_category = "colors"
-		ConfigSetting.DEBUG_COLOR, ConfigSetting.INFO_COLOR, ConfigSetting.WARNING_COLOR:
+		ConfigSetting.SHOW_COLORS, \
+				ConfigSetting.DEBUG_COLOR, \
+				ConfigSetting.INFO_COLOR, \
+				ConfigSetting.WARNING_COLOR:
 			setting_category = "colors"
 
 		_:
