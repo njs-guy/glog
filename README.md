@@ -48,15 +48,13 @@ message itself.
 
 The tags at the beginning of the message will be colored in the Godot output
 panel. Their colors can be changed in the project settings, or on a per-message
-basis like this.
+basis like this. This argument accepts any
+[Color](https://docs.godotengine.org/en/stable/classes/class_color.html) that
+Godot accepts.
 
 ```gdscript
 Glog.info("player_state", "The player died.", "#ef4444")
 ```
-
-This argument accepts any
-[Color](https://docs.godotengine.org/en/stable/classes/class_color.html) that
-Godot accepts.
 
 C# support is limited, clunky and error prone. While it does work for the most
 part, Glog was made with GDScript in mind. It can be accessed like any other
@@ -98,14 +96,15 @@ The default settings should be fine for most use cases.
 - Date Separator: What character to use to separate date numbers. Defaults to
   `"."`.
 - Include Date: Whether to include a date in the timestamp. Defaults to `true`.
-- Include Time: Whether to include the time in the timestamp. Defaults to `true`.
+- Include Time: Whether to include the time in the timestamp. Defaults to
+  `true`.
 
 ### Colors
 
 - Show Colors: Which messages should display colors. Defaults to `All`.
-- Debug Color: The color for debug messages. Defaults to `#70BAFA`.
-- Info Color: The color for info messages. Defaults to `#478CBF`.
-- Warning Color: The color for warning messages. Defaults to `#FFDE66`.
+- Debug Color: The color for debug messages. Defaults to `#3de08e`.
+- Info Color: The color for info messages. Defaults to `#3dbde0`.
+- Warning Color: The color for warning messages. Defaults to `#e0c73d`.
 
 ## Writing output to file
 
