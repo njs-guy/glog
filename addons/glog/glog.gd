@@ -52,9 +52,9 @@ const DEFAULT_CONFIG := {
 	include_time = true,
 	include_debug_traceback = true,
 	show_colors = ShowColorsLevel.ALL,
-	debug_color = "#70BAFA",
-	info_color = "#478CBF",
-	warning_color = "#FFDE66",
+	debug_color = "#3de08e",
+	info_color = "#3dbde0",
+	warning_color = "#e0c73d",
 }
 
 ########## LOGGING ##########
