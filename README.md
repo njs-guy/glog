@@ -84,28 +84,28 @@ The default settings should be fine for most use cases.
 
 ### General
 
-- Log Level: The lowest logging level to write to output. Defaults to Debug.
+- Log Level: The lowest logging level to write to output. Defaults to `Debug`.
   Debug messages are hidden in release builds.
 - Show Init Message: Whether to show the "glog loaded successfully" message at
-  startup. Defaults to true.
+  startup. Defaults to `true`.
 - Include Debug Traceback - Whether to show function traceback for debug
-  messages. Defaults to true.
+  messages. Defaults to `true`.
 - Include Timestamp: Whether to print a timestamp for each log. Defaults to
-  true.
+  `true`.
 
 ### Timestamps
 
 - Date Separator: What character to use to separate date numbers. Defaults to
-  ".".
-- Include Date: Whether to include a date in the timestamp. Defaults to true.
-- Include Time: Whether to include the time in the timestamp. Defaults to true.
+  `"."`.
+- Include Date: Whether to include a date in the timestamp. Defaults to `true`.
+- Include Time: Whether to include the time in the timestamp. Defaults to `true`.
 
 ### Colors
 
-- Show Colors: Which messages should display colors. Defaults to All.
-- Debug Color: The color for debug messages. Defaults to #70BAFA.
-- Info Color: The color for info messages. Defaults to #478CBF.
-- Warning Color: The color for warning messages. Defaults to #FFDE66.
+- Show Colors: Which messages should display colors. Defaults to `All`.
+- Debug Color: The color for debug messages. Defaults to `#70BAFA`.
+- Info Color: The color for info messages. Defaults to `#478CBF`.
+- Warning Color: The color for warning messages. Defaults to `#FFDE66`.
 
 ## Writing output to file
 
