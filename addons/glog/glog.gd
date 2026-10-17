@@ -57,6 +57,20 @@ const DEFAULT_CONFIG := {
 	warning_color = "#e0c73d",
 }
 
+
+# Only used for _get_glog_config_setting()
+const _TIMESTAMP_SETTINGS := [
+	ConfigSetting.DATE_SEPARATOR,
+	ConfigSetting.INCLUDE_DATE,
+	ConfigSetting.INCLUDE_TIME,
+]
+const _COLOR_SETTINGS := [
+	ConfigSetting.SHOW_COLORS,
+	ConfigSetting.DEBUG_COLOR,
+	ConfigSetting.INFO_COLOR,
+	ConfigSetting.WARNING_COLOR,
+]
+
 ########## LOGGING ##########
 
 
@@ -349,20 +363,12 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 	var key_name := str(ConfigSetting.keys()[key]).to_lower()
 	var setting_category := ""
 
-	match key:
-		ConfigSetting.DATE_SEPARATOR, \
-				ConfigSetting.INCLUDE_DATE, \
-				ConfigSetting.INCLUDE_TIME:
-			setting_category = "timestamps"
-
-		ConfigSetting.SHOW_COLORS, \
-				ConfigSetting.DEBUG_COLOR, \
-				ConfigSetting.INFO_COLOR, \
-				ConfigSetting.WARNING_COLOR:
-			setting_category = "colors"
-
-		_:
-			setting_category = "general"
+	if key in _TIMESTAMP_SETTINGS:
+		setting_category = "timestamps"
+	elif key in _COLOR_SETTINGS:
+		setting_category = "colors"
+	else:
+		setting_category = "general"
 
 	var setting_path := "glog/config/%s/%s" % [setting_category, key_name]
 	output = ProjectSettings.get_setting(setting_path, DEFAULT_CONFIG[key_name])
