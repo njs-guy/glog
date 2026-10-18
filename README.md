@@ -2,6 +2,14 @@
 
 A simple GDScript logger for [Godot Engine 4](https://godotengine.org/).
 
+## Features
+
+- Simple API
+- Colored output
+- Fake warnings
+- Output settings
+- Supports Godot 4.1+
+
 ## Installation
 
 ### Manual
