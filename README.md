@@ -12,7 +12,24 @@ A simple GDScript logger for [Godot Engine 4](https://godotengine.org/).
 
 ## Installation
 
+### Asset Store (recommended)
+
+Requires Godot 4.6 or newer.
+
+Optional: the link to the asset page can be found
+[here](https://store.godotengine.org/asset/njs-guy/glog/).
+
+1. Click on the "Asset Store" tab at the top of the Godot Editor.
+2. Search for "glog" in the search bar. The author is "njs-guy".
+3. Click on the glog addon. A popup window will show up. Click on "Download".
+4. From there, Godot will download and extract the addon.
+5. Enable the addon through `Project -> Project Settings... -> Plugins -> Glog`.
+6. Under `Project Settings -> Globals`, move `Glog` to the top of the list.
+7. An autoload singleton will be added under the name `Glog`.
+
 ### Manual
+
+Requires Godot 4.1.4 or newer.
 
 1. Download the addon files from the
    [releases](https://github.com/njs-guy/glog/releases).
