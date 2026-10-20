@@ -71,7 +71,8 @@ const _COLOR_SETTINGS := [
 	ConfigSetting.WARNING_COLOR,
 ]
 
-########## LOGGING ##########
+
+#region Logging
 
 
 ## Shows the [code]glog loaded successfully[/code] message
@@ -353,7 +354,10 @@ func _log_message(
 func _log_traceback() -> void:
 	print("\t--> %s" % _get_traceback())
 
-########## CONFIG ##########
+#endregion
+
+
+#region Config
 
 
 ## Reads the project settings file using the given [enum ConfigSetting].
@@ -488,7 +492,10 @@ static func _add_settings() -> void:
 		Color.html(DEFAULT_CONFIG.warning_color),
 	)
 
-########## PUBLIC API ##########
+#endregion
+
+
+#region Public API
 
 
 ## Logs a message containing debug information.
@@ -535,6 +542,8 @@ func warn(
 func error(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.ERROR):
 		_log_message(category, message, LogLevel.ERROR)
+
+#endregion
 
 
 func _ready() -> void:
