@@ -1,16 +1,16 @@
 # Changelog
 
-## v1.1.1 (2026/10/??)
+## v1.1.1 - 2026-10-20
 
 - Updated default output colors to be more in-line with the editor. These were
   taken from Godot's folder colors.
-  - Debug color: HEX 70BAFA -> HEX 3de08e
-  - Info color: HEX 478CBF -> HEX 3dbde0
-  - Warning color: HEX FFDE66 -> HEX e0c73d
+  - Debug color: `#70BAFA` -> `#3de08e`
+  - Info color: `#478CBF` -> `#3dbde0`
+  - Warning color: `#FFDE66` -> `#e0c73d`
 - Updated documentation.
 - Some code cleanup.
 
-## v1.1.0 (2025/11/12)
+## v1.1.0 - 2025-11-12
 
 ### New features
 
@@ -24,7 +24,7 @@
 - Debug messages now have proper tracebacks.
 - Tons of internal refactoring.
 
-## v1.0.1 (2025/10/22)
+## v1.0.1 - 2025-10-22
 
 - No longer logs debug messages when debugging isn't available.
 - Removed traceback from `Glog.debug()`.
@@ -34,6 +34,6 @@ where `Glog.debug()` was called. As a result, the traceback was ALWAYS
 `At: res://addons/glog/glog.gd:158:_log_message()` which wasn't useful
 information. This change is just to clean up the output.
 
-## v1.0.0 (2025/10/22)
+## v1.0.0 - 2025-10-22
 
 - Initial release.
