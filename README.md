@@ -16,8 +16,7 @@ A simple GDScript logger for [Godot Engine 4](https://godotengine.org/).
 
 Requires Godot 4.6 or newer.
 
-Optional: the link to the asset page can be found
-[here](https://store.godotengine.org/asset/njs-guy/glog/).
+[Asset Store page](https://store.godotengine.org/asset/njs-guy/glog/) (optional)
 
 1. Click on the "Asset Store" tab at the top of the Godot Editor.
 2. Search for "glog" in the search bar. The author is "njs-guy".
@@ -25,7 +24,6 @@ Optional: the link to the asset page can be found
 4. From there, Godot will download and extract the addon.
 5. Enable the addon through `Project -> Project Settings... -> Plugins -> Glog`.
 6. Under `Project Settings -> Globals`, move `Glog` to the top of the list.
-7. An autoload singleton will be added under the name `Glog`.
 
 ### Manual
 
@@ -37,7 +35,6 @@ Requires Godot 4.1.4 or newer.
 3. Move the `glog` folder into your project under `addons/`.
 4. Enable the addon through `Project -> Project Settings... -> Plugins -> Glog`.
 5. Under `Project Settings -> Globals`, move `Glog` to the top of the list.
-6. An autoload singleton will be added under the name `Glog`.
 
 ### Minimum Godot version
 
@@ -55,7 +52,8 @@ So while you _can_ use Glog in Godot 4.0.4, it's not recommended.
 
 ## Usage
 
-After the addon is enabled, you can use the logger like this:
+After the addon is enabled, you can use the logger like this. The first argument
+is for the log category or scope, and the second is for the message itself.
 
 ```gdscript
 Glog.debug("rng", "Rolled 50")
@@ -67,9 +65,6 @@ Glog.error("player", "Could not find PlayerController.")
 Which will give the following output:
 
 ![Output screenshot](assets/output_screenshot.png "Output screenshot")
-
-The first argument is for the log category or scope, and the second is for the
-message itself.
 
 The tags at the beginning of the message will be colored in the Godot output
 panel. Their colors can be changed in the project settings, or on a per-message
