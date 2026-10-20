@@ -22,7 +22,8 @@ enum ShowColorsLevel {
 	NONE,
 }
 
-## The potential settings to be called with [method Glog._get_glog_config_setting]
+## The potential settings to be called with
+## [method Glog._get_glog_config_setting]
 enum ConfigSetting {
 	LOG_LEVEL,
 	SHOW_INIT_MESSAGE,
@@ -51,17 +52,34 @@ const DEFAULT_CONFIG := {
 	include_time = true,
 	include_debug_traceback = true,
 	show_colors = ShowColorsLevel.ALL,
-	debug_color = "#70BAFA",
-	info_color = "#478CBF",
-	warning_color = "#FFDE66"
+	debug_color = "#3de08e",
+	info_color = "#3dbde0",
+	warning_color = "#e0c73d",
 }
 
-########## LOGGING ##########
+
+# Only used for _get_glog_config_setting()
+const _TIMESTAMP_SETTINGS := [
+	ConfigSetting.DATE_SEPARATOR,
+	ConfigSetting.INCLUDE_DATE,
+	ConfigSetting.INCLUDE_TIME,
+]
+const _COLOR_SETTINGS := [
+	ConfigSetting.SHOW_COLORS,
+	ConfigSetting.DEBUG_COLOR,
+	ConfigSetting.INFO_COLOR,
+	ConfigSetting.WARNING_COLOR,
+]
+
+
+#region Logging
 
 
 ## Shows the [code]glog loaded successfully[/code] message
 func _show_init_message() -> void:
-	var show_init_message: int = _get_glog_config_setting(ConfigSetting.SHOW_INIT_MESSAGE)
+	var show_init_message: int = _get_glog_config_setting(
+		ConfigSetting.SHOW_INIT_MESSAGE
+	)
 
 	if show_init_message:
 		info(CATEGORY_NAME, "glog loaded successfully.")
@@ -69,7 +87,9 @@ func _show_init_message() -> void:
 
 ## Returns [code]true[/code] if the log_level is enabled.
 func _check_log_level(level_to_check: LogLevel) -> bool:
-	var config_log_level: int = _get_glog_config_setting(ConfigSetting.LOG_LEVEL)
+	var config_log_level: int = _get_glog_config_setting(
+		ConfigSetting.LOG_LEVEL
+	)
 
 	if config_log_level == LogLevel.NONE:
 		return false
@@ -87,7 +107,9 @@ func _get_log_level_key(level: LogLevel) -> String:
 
 ## Returns the current date as a String.
 func _get_date(datetime_dict: Dictionary) -> String:
-	var date_separator: String = _get_glog_config_setting(ConfigSetting.DATE_SEPARATOR)
+	var date_separator: String = _get_glog_config_setting(
+		ConfigSetting.DATE_SEPARATOR
+	)
 
 	var output = (
 		"%s%s%s%s%s"
@@ -119,9 +141,15 @@ func _get_time(datetime_dict: Dictionary) -> String:
 
 ## Returns a timestamp based on current config settings as a String.
 func _get_timestamp() -> String:
-	var include_timestamp: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIMESTAMP)
-	var include_date: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_DATE)
-	var include_time: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIME)
+	var include_timestamp: bool = _get_glog_config_setting(
+		ConfigSetting.INCLUDE_TIMESTAMP
+	)
+	var include_date: bool = _get_glog_config_setting(
+		ConfigSetting.INCLUDE_DATE
+	)
+	var include_time: bool = _get_glog_config_setting(
+		ConfigSetting.INCLUDE_TIME
+	)
 
 	if not include_timestamp:
 		return ""
@@ -164,30 +192,47 @@ func _get_output_string(
 	color := Color.TRANSPARENT,
 ) -> String:
 	var print_color := false
-	var show_colors_level: ShowColorsLevel = _get_glog_config_setting(ConfigSetting.SHOW_COLORS)
+	var show_colors_level: ShowColorsLevel = _get_glog_config_setting(
+		ConfigSetting.SHOW_COLORS
+	)
 
 	# Determine if colors should be printed
 	if !log_level == LogLevel.ERROR:
 		# If this is not an error message
 		if !show_colors_level == ShowColorsLevel.ALL:
 			# If show_colors is not set to All
-			if show_colors_level == ShowColorsLevel.ONLY_WARNINGS and log_level == LogLevel.WARN:
+			if (
+				show_colors_level == ShowColorsLevel.ONLY_WARNINGS
+				and log_level == LogLevel.WARN
+			):
 				# If warnings are allowed and this message is a warning
 				print_color = true
 		else:
 			print_color = true
 
-	var meta := "%s[%s][%s]" % [timestamp, _get_log_level_key(log_level), category]
+	var meta := "%s[%s][%s]" % [
+		timestamp,
+		_get_log_level_key(log_level),
+		category,
+	]
 
 	var output := ""
 
 	if print_color:
 		if color_message:
 			# Print color, print colored message
-			output = "[color=%s]%s %s[/color]" % [color.to_html(), meta, message]
+			output = "[color=%s]%s %s[/color]" % [
+				color.to_html(),
+				meta,
+				message,
+			]
 		else:
 			# Print color, message has no color
-			output = "[color=%s]%s[/color] %s" % [color.to_html(), meta, message]
+			output = "[color=%s]%s[/color] %s" % [
+				color.to_html(),
+				meta,
+				message,
+			]
 	else:
 		# No color
 		output = "%s %s" % [meta, message]
@@ -201,19 +246,27 @@ func _check_color(color: Color, level := LogLevel.INFO) -> Color:
 
 	match level:
 		LogLevel.DEBUG:
-			var config_color: Color = _get_glog_config_setting(ConfigSetting.DEBUG_COLOR)
+			var config_color: Color = _get_glog_config_setting(
+				ConfigSetting.DEBUG_COLOR
+			)
 			log_color = config_color
 
 		LogLevel.INFO:
-			var config_color: Color = _get_glog_config_setting(ConfigSetting.INFO_COLOR)
+			var config_color: Color = _get_glog_config_setting(
+				ConfigSetting.INFO_COLOR
+			)
 			log_color = config_color
 
 		LogLevel.WARN:
-			var config_color: Color = _get_glog_config_setting(ConfigSetting.WARNING_COLOR)
+			var config_color: Color = _get_glog_config_setting(
+				ConfigSetting.WARNING_COLOR
+			)
 			log_color = config_color
 
 		_:
-			var config_color: Color = _get_glog_config_setting(ConfigSetting.INFO_COLOR)
+			var config_color: Color = _get_glog_config_setting(
+				ConfigSetting.INFO_COLOR
+			)
 			log_color = config_color
 
 	if color == Color.TRANSPARENT:
@@ -231,9 +284,15 @@ func _log_message(
 	level := LogLevel.INFO,
 	color := Color.TRANSPARENT,
 ) -> void:
-	var include_timestamp: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIMESTAMP)
-	var include_date: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_DATE)
-	var include_time: bool = _get_glog_config_setting(ConfigSetting.INCLUDE_TIME)
+	var include_timestamp: bool = _get_glog_config_setting(
+		ConfigSetting.INCLUDE_TIMESTAMP
+	)
+	var include_date: bool = _get_glog_config_setting(
+		ConfigSetting.INCLUDE_DATE
+	)
+	var include_time: bool = _get_glog_config_setting(
+		ConfigSetting.INCLUDE_TIME
+	)
 
 	var timestamp := ""
 
@@ -285,14 +344,7 @@ func _log_message(
 			)
 
 		LogLevel.ERROR:
-			printerr(
-				_get_output_string(
-					timestamp,
-					level,
-					category,
-					message,
-				)
-			)
+			printerr(_get_output_string(timestamp, level, category, message))
 
 		LogLevel.NONE:
 			# Do nothing
@@ -302,8 +354,10 @@ func _log_message(
 func _log_traceback() -> void:
 	print("\t--> %s" % _get_traceback())
 
+#endregion
 
-########## CONFIG ##########
+
+#region Config
 
 
 ## Reads the project settings file using the given [enum ConfigSetting].
@@ -313,18 +367,12 @@ func _get_glog_config_setting(key: ConfigSetting) -> Variant:
 	var key_name := str(ConfigSetting.keys()[key]).to_lower()
 	var setting_category := ""
 
-	match key:
-		ConfigSetting.DATE_SEPARATOR, ConfigSetting.INCLUDE_DATE, ConfigSetting.INCLUDE_TIME:
-			setting_category = "timestamps"
-
-		# This repeat is just to reduce the line length
-		ConfigSetting.SHOW_COLORS:
-			setting_category = "colors"
-		ConfigSetting.DEBUG_COLOR, ConfigSetting.INFO_COLOR, ConfigSetting.WARNING_COLOR:
-			setting_category = "colors"
-
-		_:
-			setting_category = "general"
+	if key in _TIMESTAMP_SETTINGS:
+		setting_category = "timestamps"
+	elif key in _COLOR_SETTINGS:
+		setting_category = "colors"
+	else:
+		setting_category = "general"
 
 	var setting_path := "glog/config/%s/%s" % [setting_category, key_name]
 	output = ProjectSettings.get_setting(setting_path, DEFAULT_CONFIG[key_name])
@@ -347,21 +395,22 @@ static func _add_bool_setting(
 	if not ProjectSettings.has_setting(setting_path):
 		ProjectSettings.set_setting(setting_path, default_value)
 
-	ProjectSettings.add_property_info({"name": setting_path, "type": TYPE_BOOL})
+	ProjectSettings.add_property_info(
+		{ "name": setting_path, "type": TYPE_BOOL }
+	)
 	ProjectSettings.set_initial_value(setting_path, default_value)
 	ProjectSettings.set_as_basic(setting_path, true)
 
 
-static func _add_color_setting(
-	name: String,
-	default_value: Color,
-) -> void:
+static func _add_color_setting(name: String, default_value: Color) -> void:
 	var setting_path = "glog/config/colors/%s" % name
 
 	if not ProjectSettings.has_setting(setting_path):
 		ProjectSettings.set_setting(setting_path, default_value)
 
-	ProjectSettings.add_property_info({"name": setting_path, "type": TYPE_COLOR})
+	ProjectSettings.add_property_info(
+		{ "name": setting_path, "type": TYPE_COLOR }
+	)
 	ProjectSettings.set_initial_value(setting_path, default_value)
 	ProjectSettings.set_as_basic(setting_path, true)
 
@@ -375,8 +424,7 @@ static func _add_enum_setting(
 		ProjectSettings.set_setting(path, default_value)
 
 	(
-		ProjectSettings
-		. add_property_info(
+		ProjectSettings.add_property_info(
 			{
 				"name": path,
 				"type": TYPE_INT,
@@ -396,25 +444,34 @@ static func _add_settings() -> void:
 	const SHOW_COLORS_PATH := "glog/config/colors/show_colors"
 
 	# general
-
 	_add_enum_setting(
 		LOG_LEVEL_PATH,
 		"Debug,Info,Warning,Error,None",
 		DEFAULT_CONFIG.log_level,
 	)
 	_add_bool_setting("show_init_message", DEFAULT_CONFIG.show_init_message)
-	_add_bool_setting("include_debug_traceback", DEFAULT_CONFIG.include_debug_traceback)
+	_add_bool_setting(
+		"include_debug_traceback",
+		DEFAULT_CONFIG.include_debug_traceback,
+	)
 	_add_bool_setting("include_timestamp", DEFAULT_CONFIG.include_timestamp)
 
 	# timestamps
 
 	# date_separator
-
 	if not ProjectSettings.has_setting(DATE_SEPARATOR_PATH):
-		ProjectSettings.set_setting(DATE_SEPARATOR_PATH, DEFAULT_CONFIG.date_separator)
+		ProjectSettings.set_setting(
+			DATE_SEPARATOR_PATH,
+			DEFAULT_CONFIG.date_separator,
+		)
 
-	ProjectSettings.add_property_info({"name": DATE_SEPARATOR_PATH, "type": TYPE_STRING})
-	ProjectSettings.set_initial_value(DATE_SEPARATOR_PATH, DEFAULT_CONFIG.date_separator)
+	ProjectSettings.add_property_info(
+		{ "name": DATE_SEPARATOR_PATH, "type": TYPE_STRING }
+	)
+	ProjectSettings.set_initial_value(
+		DATE_SEPARATOR_PATH,
+		DEFAULT_CONFIG.date_separator,
+	)
 	ProjectSettings.set_as_basic(DATE_SEPARATOR_PATH, true)
 
 	_add_bool_setting("include_date", DEFAULT_CONFIG.include_date, true)
@@ -423,7 +480,6 @@ static func _add_settings() -> void:
 	# colors
 
 	# BUG: Changing color or timestamp settings makes the section go to the top
-
 	_add_enum_setting(
 		SHOW_COLORS_PATH,
 		"All,Warnings only,None",
@@ -431,10 +487,15 @@ static func _add_settings() -> void:
 	)
 	_add_color_setting("debug_color", Color.html(DEFAULT_CONFIG.debug_color))
 	_add_color_setting("info_color", Color.html(DEFAULT_CONFIG.info_color))
-	_add_color_setting("warning_color", Color.html(DEFAULT_CONFIG.warning_color))
+	_add_color_setting(
+		"warning_color",
+		Color.html(DEFAULT_CONFIG.warning_color),
+	)
+
+#endregion
 
 
-########## PUBLIC API ##########
+#region Public API
 
 
 ## Logs a message containing debug information.
@@ -481,6 +542,8 @@ func warn(
 func error(category: String, message: String) -> void:
 	if _check_log_level(LogLevel.ERROR):
 		_log_message(category, message, LogLevel.ERROR)
+
+#endregion
 
 
 func _ready() -> void:

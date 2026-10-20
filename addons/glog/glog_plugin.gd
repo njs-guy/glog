@@ -6,10 +6,7 @@ const AUTOLOAD_NAME = "Glog"
 
 
 func _enable_plugin() -> void:
-	add_autoload_singleton(
-		AUTOLOAD_NAME,
-		"res://addons/glog/glog.tscn",
-	)
+	add_autoload_singleton(AUTOLOAD_NAME, "res://addons/glog/glog.tscn")
 
 
 func _disable_plugin() -> void:
